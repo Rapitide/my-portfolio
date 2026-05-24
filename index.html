@@ -286,7 +286,7 @@
             align-items: flex-start;
             gap: 12px;
             position: absolute;
-            bottom: 180px;
+            bottom: 250px; /* 180px から 250px に引き上げてメニューと被らないように修正 */
             left: 50%;
             transform: scale(0.9) translateX(-50%) translateY(10px);
             opacity: 0;
@@ -467,7 +467,7 @@
 
             .chat-bubble {
                 width: 280px;
-                bottom: 170px;
+                bottom: 240px; /* モバイルでの重なり防止のため、170px から 240px へ引き上げ */
             }
         }
     </style>
@@ -614,6 +614,11 @@
                         <h2>制作物</h2>
                         <div class="info-row" style="color: #999;">準備中</div>
                     </div>
+
+                    <div class="section">
+                        <h2>ブログ</h2>
+                        <div class="info-row" style="color: #999;">準備中</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -630,7 +635,9 @@
 
                 <!-- 気が向いたら書くよボード -->
                 <div class="notes-placeholder-card">
+                    
                     <p class="placeholder-main-text">気が向いたら書くよ。</p>
+                    
                 </div>
             </div>
         </div>
@@ -654,7 +661,7 @@
             </div>
             <!-- お気に入りの文章に復元 -->
             <div class="chat-text">
-                Notesにブログっぽいもの載せたりできたらいいなぁと思ってます
+                Notesにブログっぽいものを載せれたらいいなぁと思ってます。
             </div>
         </div>
 
