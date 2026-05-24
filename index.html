@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rapiterの隠れ家</title>
+    <meta name="description" content="薄く広い、スーパー飽き性、何者かになりたい大学生のポートフォリオ。">
+
+    <!-- OGP -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://rapitide.pages.dev/">
+    <meta property="og:title" content="rapiterの隠れ家">
+    <meta property="og:description" content="薄く広い、スーパー飽き性、何者かになりたい大学生のポートフォリオ。">
+    <meta property="og:site_name" content="rapiterの隠れ家">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="rapiterの隠れ家">
+    <meta name="twitter:description" content="薄く広い、スーパー飽き性、何者かになりたい大学生のポートフォリオ。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: #fff;
+            color: #333;
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== Header ===== */
+        .header {
+            text-align: center;
+            padding: 48px 24px 32px;
+            border-bottom: 1px solid #eee;
+        }
+
+
+
+        .header-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .header-name span {
+            font-weight: 400;
+            color: #888;
+            font-size: 0.95rem;
+            margin-left: 6px;
+        }
+
+        /* ===== SNS Icons ===== */
+        .sns-icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .sns-icons a {
+            color: #555;
+            display: inline-flex;
+            transition: color 0.2s;
+        }
+
+        .sns-icons a:hover {
+            color: #000;
+        }
+
+        .sns-icons svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        /* ===== Main ===== */
+        .main {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 40px 32px 64px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+        }
+
+        /* ===== Section Title ===== */
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #111;
+        }
+
+        /* ===== Info Row ===== */
+        .info-row {
+            margin-bottom: 8px;
+            font-size: 0.92rem;
+            color: #333;
+        }
+
+        .info-label {
+            color: #888;
+            margin-right: 2px;
+        }
+
+        /* ===== Tags ===== */
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .tag {
+            font-size: 0.8rem;
+            padding: 3px 12px;
+            border-radius: 999px;
+            background: #f5f5f5;
+            color: #555;
+            border: 1px solid #eee;
+        }
+
+        /* ===== Section Spacing ===== */
+        .section {
+            margin-bottom: 36px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ===== Item List ===== */
+        .item-list {
+            list-style: none;
+        }
+
+        .item-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.92rem;
+        }
+
+        .item-list li:last-child {
+            border-bottom: none;
+        }
+
+        .item-list .sub {
+            font-size: 0.78rem;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        /* ===== Link style ===== */
+        a.text-link {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a.text-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== Fun Fact ===== */
+        .fun-fact {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 14px 18px;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            text-align: center;
+            padding: 24px;
+            font-size: 0.75rem;
+            color: #bbb;
+            border-top: 1px solid #eee;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 640px) {
+            .main {
+                grid-template-columns: 1fr;
+                gap: 32px;
+                padding: 32px 20px 48px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-name">らぴたー <span>/ rapiter</span></div>
+
+        <div class="sns-icons">
+            <!-- GitHub -->
+            <a href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+                </svg>
+            </a>
+            <!-- X -->
+            <a href="https://x.com/Rptied?s=20" target="_blank" rel="noopener noreferrer" aria-label="X">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+            </a>
+            <!-- Instagram -->
+            <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                </svg>
+            </a>
+            <!-- YouTube -->
+            <a href="https://youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+
+        <!-- 左カラム -->
+        <div>
+            <div class="section">
+                <h2>私の中身</h2>
+                <div class="info-row"><span class="info-label">名前：</span>らぴたー</div>
+                <div class="info-row"><span class="info-label">性別：</span>男</div>
+                <div class="info-row"><span class="info-label">年齢：</span>2007年生まれ 18歳（大学1年）</div>
+                <div class="info-row"><span class="info-label">職業：</span>大学生</div>
+                <div class="info-row"><span class="info-label">血液型：</span>A型</div>
+                <div class="info-row"><span class="info-label">バイト：</span>塾講、学童</div>
+                <div class="info-row"><span class="info-label">属性：</span>生まれも育ちも埼玉、実家暮らし</div>
+                <div class="info-row"><span class="info-label">MBTI：</span>INTP</div>
+                <div class="info-row"><span class="info-label">特技：</span>考え事、ピアノ（過去の栄光。小学校の卒業式の伴奏以降触れてない）</div>
+                <div class="info-row"><span class="info-label">自分を一言でいうと：</span>薄く広い、かなりの飽き性、何者かになりたい</div>
+            </div>
+
+            <div class="section">
+                <h2>興味</h2>
+                <ul class="item-list">
+                    <li>言葉</li>
+                    <li>心理学</li>
+                    <li>アプリ開発</li>
+                    <li>ゲーム開発</li>
+                    <li>音楽制作</li>
+                    <li>3DCG</li>
+                    <li>映像制作</li>
+                    <li>暗号資産</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>珍しい特性</h2>
+                <div class="info-row">友達と2人でエジプトに行ったことがある</div>
+            </div>
+
+            <div class="section">
+                <h2>好きなもの</h2>
+                <ul class="item-list">
+                    <li>ラーメン</li>
+                    <li>たこ焼き</li>
+                    <li>図書館</li>
+                    <li>散歩</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>嫌いなもの</h2>
+                <div class="info-row">人混み</div>
+            </div>
+        </div>
+
+        <!-- 右カラム -->
+        <div>
+            <div class="section">
+                <h2>最近やってること</h2>
+                <ul class="item-list">
+                    <li>AIコーディング</li>
+                    <li>バイト</li>
+                    <li>くねくね</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>やりたいこと</h2>
+                <ul class="item-list">
+                    <li>言葉探し</li>
+                    <li>多方面のバイト</li>
+                    <li>多方面の映画視聴</li>
+                    <li>資格・免許取得</li>
+                    <li>一人旅行</li>
+                    <li>NISA</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>夢</h2>
+                <ul class="item-list">
+                    <li>47都道府県すべての地を踏む</li>
+                    <li>色んな国に行く</li>
+                    <li>平和な暮らし</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>最近、頭の中を占めること</h2>
+                <div class="info-row">将来どうしよう</div>
+            </div>
+
+            <div class="section">
+                <h2>買ってよかったものリスト</h2>
+                <div class="info-row" style="color: #999;">準備中</div>
+            </div>
+
+            <div class="section">
+                <h2>制作物</h2>
+                <div class="info-row" style="color: #999;">準備中</div>
+            </div>
+
+            <div class="section">
+                <h2>ブログ</h2>
+                <div class="info-row" style="color: #999;">準備中</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>ここってAll rights reservedみたいなの書くんだっけ</p>
+    </footer>
+
+</body>
+
+</html>
