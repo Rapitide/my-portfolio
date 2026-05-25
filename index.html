@@ -98,8 +98,8 @@
         }
 
         .header-logo {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -114,13 +114,13 @@
         }
 
         .header-logo svg {
-            width: 28px;
-            height: 28px;
+            width: 36px;
+            height: 36px;
             display: block;
         }
 
         .header-name {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: #111;
             margin-left: 10px;
@@ -182,6 +182,34 @@
         .info-label {
             color: #888;
             margin-right: 2px;
+        }
+
+        /* ===== Visitor Counter (Header) ===== */
+        .header-visitor {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.04);
+            padding: 4px 12px;
+            border-radius: 999px;
+            color: #444;
+            transition: background 0.2s;
+            cursor: default;
+        }
+
+        .header-visitor:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .header-visitor-icon {
+            font-size: 1.1rem;
+        }
+
+        .header-visitor-number {
+            font-weight: 700;
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: #111;
         }
 
         /* ===== Section Spacing ===== */
@@ -273,65 +301,6 @@
 
         .floating-menu-container * {
             pointer-events: auto;
-        }
-
-        /* コメント吹き出し */
-        .chat-bubble {
-            background-color: #1e1e1e;
-            color: #fff;
-            border-radius: 18px;
-            padding: 16px;
-            width: 290px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            position: absolute;
-            bottom: 180px;
-            left: 50%;
-            transform: scale(0.9) translateX(-50%) translateY(10px);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            transform-origin: bottom center;
-            z-index: 1;
-        }
-
-        .chat-bubble.active {
-            opacity: 1;
-            transform: scale(1) translateX(-50%) translateY(0);
-            pointer-events: auto;
-        }
-
-        .chat-bubble::after {
-            content: "";
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-width: 8px 8px 0;
-            border-style: solid;
-            border-color: #1e1e1e transparent;
-            display: block;
-            width: 0;
-        }
-
-        .chat-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            border: 1px solid #333;
-        }
-
-        .chat-text {
-            font-size: 0.84rem;
-            line-height: 1.5;
-            color: #e0e0e0;
         }
 
         /* メニューカード本体 */
@@ -467,14 +436,32 @@
             .floating-menu-container {
                 bottom: 16px;
             }
-
-            .chat-bubble {
-                width: 280px;
-                bottom: 170px;
-            }
             
+            .header {
+                padding: 0 12px;
+            }
+
+            .header-logo {
+                width: 40px;
+                height: 40px;
+            }
+
+            .header-logo svg {
+                width: 28px;
+                height: 28px;
+            }
+
             .header-name {
                 font-size: 1.1rem;
+                margin-left: 6px;
+            }
+
+            .header-visitor {
+                padding: 4px 8px;
+            }
+
+            .sns-icons {
+                gap: 12px;
             }
         }
     </style>
@@ -497,6 +484,12 @@
             <div class="header-name">ラピ態度</div>
         </div>
         
+        <!-- ヘッダー用訪問者カウンター -->
+        <div class="header-visitor" title="これまでの訪問者数">
+            <span class="header-visitor-icon">👥</span>
+            <span class="header-visitor-number" id="visitor-count-display">-</span>
+        </div>
+
         <div class="sns-icons">
             <!-- GitHub -->
             <a href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
@@ -510,23 +503,27 @@
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
             </a>
-            <!-- Instagram -->
-            <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                </svg>
-            </a>
-            <!-- YouTube -->
-            <a href="https://youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-                <svg viewBox="0 0 24 24">
-                    <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                </svg>
-            </a>
         </div>
     </div>
 
     <!-- Page Wrapper -->
     <div class="page-container">
+
+        <!-- ================= WHAT'S THIS PAGE ================= -->
+        <div id="page-whats-this" class="page">
+            <div class="notes-container">
+                <div class="notes-header">
+                    <h1 class="notes-title">What's this?</h1>
+                    <div class="notes-subtitle">
+                        <span>このサイトについて。</span>
+                    </div>
+                </div>
+                <div class="notes-placeholder-card">
+                    <p class="placeholder-main-text">ラピ態度の個人ウェブサイトへようこそ( ৹･֊･৹)</p>
+                    <p style="color: #666; font-size: 0.9rem; margin-top: 8px;">色々作って載せていく予定です。</p>
+                </div>
+            </div>
+        </div>
 
         <!-- ================= HOME PAGE ================= -->
         <div id="page-home" class="page active">
@@ -642,32 +639,30 @@
             </div>
         </div>
 
+        <!-- ================= PRODUCTS PAGE ================= -->
+        <div id="page-products" class="page">
+            <div class="notes-container">
+                <div class="notes-header">
+                    <h1 class="notes-title">Products</h1>
+                    <div class="notes-subtitle">
+                        <span>今まで作ってきたものたち。</span>
+                    </div>
+                </div>
+                <div class="notes-placeholder-card">
+                    <p class="placeholder-main-text">現在準備中です🛠️</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- ================= FLOATING NAVIGATION MENU ================= -->
     <div class="floating-menu-container" id="floating-menu-container">
         
-        <!-- コメント吹き出し -->
-        <div class="chat-bubble" id="chat-bubble">
-            <div class="chat-avatar">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 21c-3 0-5.5-1.2-5.5-4.5s2.5-4.5 5.5-4.5 5.5 1.2 5.5 4.5-2.5 4.5-5.5 4.5z"/>
-                    <path d="M6 11L4 8.5l2.5.5"/>
-                    <path d="M18 11l2-2.5-2.5.5"/>
-                    <path d="M9.5 14.5h.01M14.5 14.5h.01"/>
-                    <path d="M11 16.2c.3.3.7.3 1 0"/>
-                </svg>
-            </div>
-            <div class="chat-text">
-                ラピ態度の個人ウェブサイトへようこそ( ৹･֊･৹)　
-                Notesにブログっぽいもの載せたりできたらいいなぁと思ってます
-            </div>
-        </div>
-
         <!-- メニューカード本体 -->
         <div class="menu-card" id="menu-card">
             <!-- What's this? -->
-            <button class="menu-item" id="btn-whats-this">
+            <button class="menu-item" id="btn-nav-whats-this">
                 <svg viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10"></circle>
                     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
@@ -696,6 +691,17 @@
                 </svg>
                 Notes
             </button>
+
+            <!-- Products -->
+            <button class="menu-item" id="btn-nav-products">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                Products
+            </button>
             
             <!-- Follow me -->
             <a href="https://x.com/Rptied" target="_blank" rel="noopener noreferrer" class="menu-item">
@@ -722,17 +728,18 @@
     </footer>
 
     <!-- ================= JAVASCRIPT LOGIC ================= -->
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
         document.addEventListener('DOMContentLoaded', () => {
             const menuTrigger = document.getElementById('menu-trigger');
             const menuCard = document.getElementById('menu-card');
-            const chatBubble = document.getElementById('chat-bubble');
-            const btnWhatsThis = document.getElementById('btn-whats-this');
-            const btnNavHome = document.getElementById('btn-nav-home');
-            const btnNavNotes = document.getElementById('btn-nav-notes');
             const headerLeft = document.getElementById('header-left');
-            const pageHome = document.getElementById('page-home');
-            const pageNotes = document.getElementById('page-notes');
+            
+            // ページIDのリスト
+            const pages = ['whats-this', 'home', 'notes', 'products'];
 
             // --- 1. メニュー開閉制御 ---
             menuTrigger.addEventListener('click', (e) => {
@@ -748,7 +755,6 @@
 
             function closeAll() {
                 menuCard.classList.remove('active');
-                chatBubble.classList.remove('active');
                 menuTrigger.classList.remove('active');
             }
 
@@ -759,41 +765,99 @@
                 }
             });
 
-            // --- 2. What's this? ポップアップ制御 ---
-            btnWhatsThis.addEventListener('click', (e) => {
-                e.stopPropagation();
-                chatBubble.classList.toggle('active');
-            });
-
-            // --- 3. ページ切り替え（ルーティング） ---
-            function switchPage(targetPage) {
+            // --- 2. ページ切り替え（ルーティング） ---
+            function switchPage(targetPageId) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                if (targetPage === 'home') {
-                    pageHome.classList.add('active');
-                    pageNotes.classList.remove('active');
-                    btnNavHome.classList.add('active-link');
-                    btnNavNotes.classList.remove('active-link');
-                } else if (targetPage === 'notes') {
-                    pageNotes.classList.add('active');
-                    pageHome.classList.remove('active');
-                    btnNavNotes.classList.add('active-link');
-                    btnNavHome.classList.remove('active-link');
-                }
+                
+                pages.forEach(pageId => {
+                    const pageEl = document.getElementById(`page-${pageId}`);
+                    const btnEl = document.getElementById(`btn-nav-${pageId}`);
+                    
+                    if (pageEl && btnEl) {
+                        if (pageId === targetPageId) {
+                            pageEl.classList.add('active');
+                            btnEl.classList.add('active-link');
+                        } else {
+                            pageEl.classList.remove('active');
+                            btnEl.classList.remove('active-link');
+                        }
+                    }
+                });
+                
                 setTimeout(() => {
                     closeAll();
                 }, 200);
             }
 
-            btnNavHome.addEventListener('click', () => switchPage('home'));
-            btnNavNotes.addEventListener('click', () => switchPage('notes'));
+            // 各ナビゲーションボタンにクリックイベントを設定
+            pages.forEach(pageId => {
+                const btnEl = document.getElementById(`btn-nav-${pageId}`);
+                if (btnEl) {
+                    btnEl.addEventListener('click', () => switchPage(pageId));
+                }
+            });
 
-            // --- 4. ヘッダーのロゴ部分でHomeに戻る ---
+            // --- 3. ヘッダーのロゴ部分でHomeに戻る ---
             if (headerLeft) {
                 headerLeft.addEventListener('click', () => {
                     switchPage('home');
                 });
             }
         });
+
+        // --- 4. 訪問者カウンター (Firebase Firestore連携) ---
+        const initFirebaseCounter = async () => {
+            try {
+                // 実行環境から提供される設定を取得
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+                
+                if (!firebaseConfigStr) {
+                    console.warn("Firebase configuration not found. Counter will not work.");
+                    return;
+                }
+                
+                // Firebaseの初期化
+                const firebaseConfig = JSON.parse(firebaseConfigStr);
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                const db = getFirestore(app);
+
+                // 匿名認証（重複カウントを防ぐための固有ID取得）
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // 認証状態の監視とカウント処理
+                onAuthStateChanged(auth, async (user) => {
+                    if (!user) return;
+                    
+                    // ユニークユーザーを保存する公開データコレクション
+                    const visitorsRef = collection(db, 'artifacts', appId, 'public', 'data', 'unique_visitors');
+                    const myVisitorDoc = doc(visitorsRef, user.uid);
+                    
+                    // 自身の訪問を記録（既存の場合は上書きマージされるため重複しない）
+                    await setDoc(myVisitorDoc, { lastVisit: new Date().toISOString() }, { merge: true });
+                    
+                    // 訪問者データをリアルタイム監視して人数を反映
+                    onSnapshot(visitorsRef, (snapshot) => {
+                        const count = snapshot.size;
+                        const displayEl = document.getElementById('visitor-count-display');
+                        if (displayEl) {
+                            displayEl.textContent = count;
+                        }
+                    }, (error) => {
+                        console.error("Firestore onSnapshot error:", error);
+                    });
+                });
+            } catch (e) {
+                console.error("Firebase setup error:", e);
+            }
+        };
+
+        initFirebaseCounter();
     </script>
 </body>
 </html>
