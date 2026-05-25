@@ -45,7 +45,7 @@
         /* ===== ページ切り替え用コンテナ ===== */
         .page-container {
             flex: 1;
-            margin-top: 80px; /* ヘッダーの高さ＋余白 */
+            margin-top: 70px; /* ヘッダーの高さ＋余白 */
         }
 
         .page {
@@ -74,7 +74,7 @@
             top: 0;
             left: 0;
             width: 100vw;
-            height: 60px;
+            height: 52px;
             background: rgba(250, 250, 250, 0.9);
             backdrop-filter: blur(8px);
             border-bottom: 1.5px solid #ddd;
@@ -97,34 +97,40 @@
             opacity: 0.7;
         }
 
-        .header-logo {
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .header-logo-img {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            background: transparent;
+            object-fit: cover;
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid #eee;
         }
 
-        .header-logo:hover {
-            background: rgba(0, 0, 0, 0.05);
+        .header-logo-img:hover {
+            opacity: 0.8;
             transform: scale(1.05);
         }
 
-        .header-logo svg {
-            width: 36px;
-            height: 36px;
-            display: block;
+        .header-text-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-left: 10px;
         }
 
         .header-name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #111;
-            margin-left: 10px;
-            letter-spacing: 0.1em;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0f1419;
+            line-height: 1.2;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        .header-id {
+            font-size: 0.8rem;
+            color: #536471;
+            line-height: 1.2;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         /* ===== SNS Icons ===== */
@@ -188,28 +194,12 @@
         .header-visitor {
             display: flex;
             align-items: center;
-            gap: 6px;
-            background: rgba(0, 0, 0, 0.04);
-            padding: 4px 12px;
-            border-radius: 999px;
-            color: #444;
-            transition: background 0.2s;
-            cursor: default;
+            margin-right: 12px;
         }
-
-        .header-visitor:hover {
-            background: rgba(0, 0, 0, 0.08);
-        }
-
-        .header-visitor-icon {
-            font-size: 1.1rem;
-        }
-
-        .header-visitor-number {
-            font-weight: 700;
-            font-family: monospace;
-            font-size: 1.1rem;
-            color: #111;
+        
+        .header-visitor img {
+            height: 20px;
+            border-radius: 4px;
         }
 
         /* ===== Section Spacing ===== */
@@ -441,23 +431,21 @@
                 padding: 0 12px;
             }
 
-            .header-logo {
-                width: 40px;
-                height: 40px;
+            .header-logo-img {
+                width: 32px;
+                height: 32px;
             }
 
-            .header-logo svg {
-                width: 28px;
-                height: 28px;
+            .header-text-container {
+                margin-left: 8px;
             }
 
             .header-name {
-                font-size: 1.1rem;
-                margin-left: 6px;
+                font-size: 0.9rem;
             }
-
-            .header-visitor {
-                padding: 4px 8px;
+            
+            .header-id {
+                font-size: 0.75rem;
             }
 
             .sns-icons {
@@ -472,22 +460,16 @@
     <!-- 新しい Header (猫アイコン＋名前、右側にSNS) -->
     <div class="header">
         <div class="header-left" id="header-left">
-            <div class="header-logo">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 21c-3.5 0-7-1.5-7-5.5s3.5-5.5 7-5.5 7 1.5 7 5.5-3.5 5.5-7 5.5z"/>
-                    <path d="M5 13.5L3 10l3.5.5"/>
-                    <path d="M19 13.5L21 10l-3.5.5"/>
-                    <path d="M10 15h.01M14 15h.01"/>
-                    <path d="M11 17c.5.5 1.5.5 2 0"/>
-                </svg>
+            <img src="image_0c53e7.png" alt="ラピ態度" class="header-logo-img">
+            <div class="header-text-container">
+                <div class="header-name">ラピ態度</div>
+                <div class="header-id">@Rptied</div>
             </div>
-            <div class="header-name">ラピ態度</div>
         </div>
         
-        <!-- ヘッダー用訪問者カウンター -->
+        <!-- ヘッダー用訪問者カウンター (外部のバッジサービスを使用) -->
         <div class="header-visitor" title="これまでの訪問者数">
-            <span class="header-visitor-icon">👥</span>
-            <span class="header-visitor-number" id="visitor-count-display">-</span>
+            <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Frapitide.pages.dev&count_bg=%23111111&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=%E8%A8%AA%E5%95%8F%E8%80%85&edge_flat=true" alt="訪問者数">
         </div>
 
         <div class="sns-icons">
@@ -728,11 +710,7 @@
     </footer>
 
     <!-- ================= JAVASCRIPT LOGIC ================= -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
             const menuTrigger = document.getElementById('menu-trigger');
             const menuCard = document.getElementById('menu-card');
@@ -804,60 +782,6 @@
                 });
             }
         });
-
-        // --- 4. 訪問者カウンター (Firebase Firestore連携) ---
-        const initFirebaseCounter = async () => {
-            try {
-                // 実行環境から提供される設定を取得
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
-                
-                if (!firebaseConfigStr) {
-                    console.warn("Firebase configuration not found. Counter will not work.");
-                    return;
-                }
-                
-                // Firebaseの初期化
-                const firebaseConfig = JSON.parse(firebaseConfigStr);
-                const app = initializeApp(firebaseConfig);
-                const auth = getAuth(app);
-                const db = getFirestore(app);
-
-                // 匿名認証（重複カウントを防ぐための固有ID取得）
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                // 認証状態の監視とカウント処理
-                onAuthStateChanged(auth, async (user) => {
-                    if (!user) return;
-                    
-                    // ユニークユーザーを保存する公開データコレクション
-                    const visitorsRef = collection(db, 'artifacts', appId, 'public', 'data', 'unique_visitors');
-                    const myVisitorDoc = doc(visitorsRef, user.uid);
-                    
-                    // 自身の訪問を記録（既存の場合は上書きマージされるため重複しない）
-                    await setDoc(myVisitorDoc, { lastVisit: new Date().toISOString() }, { merge: true });
-                    
-                    // 訪問者データをリアルタイム監視して人数を反映
-                    onSnapshot(visitorsRef, (snapshot) => {
-                        const count = snapshot.size;
-                        const displayEl = document.getElementById('visitor-count-display');
-                        if (displayEl) {
-                            displayEl.textContent = count;
-                        }
-                    }, (error) => {
-                        console.error("Firestore onSnapshot error:", error);
-                    });
-                });
-            } catch (e) {
-                console.error("Firebase setup error:", e);
-            }
-        };
-
-        initFirebaseCounter();
     </script>
 </body>
 </html>
