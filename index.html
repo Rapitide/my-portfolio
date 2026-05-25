@@ -8,7 +8,7 @@
 
     <!-- OGP -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://rapitide.pages.dev/">
+    <meta property="og:url" content="https://rapitide.github.io/my-portfolio/">
     <meta property="og:title" content="ラピ態度のおうち">
     <meta property="og:description" content="どっかの大学生のポートフォリオ。">
     <meta property="og:site_name" content="ラピ態度のおうち">
@@ -16,7 +16,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="ラピ態度のおうち">
-    <meta name="twitter:description" content="薄く広い、スーパー飽き性、何者かになりたい大学生のポートフォリオ。">
+    <meta name="twitter:description" content="ラピ態度さん、あなた正体不明すぎるんですよ。">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
@@ -753,7 +753,7 @@
                 <!-- ひとことセクション (2カラムぶち抜き) -->
                 <div class="hitokoto-section">
                     <div class="hitokoto-title">ひとこと</div>
-                    <div class="hitokoto-content" id="hitokoto-text">本当はメリンちゃんのこと好きなんでしょ🤓</div>
+                    <div class="hitokoto-content" id="hitokoto-text">本当はメリンちゃんのこと好きなんでしょ😏</div>
                     <div class="hitokoto-action-container">
                         <span class="hitokoto-link" id="hitokoto-btn">好きな場合</span>
                     </div>
@@ -1146,7 +1146,7 @@
 
                 // Xシェア用インテントリンク設定 (URLエンコード)
                 const shareText = `今日のラピ態度おみくじの結果は【${finalFortune.result}】でした！\n\n${finalPoem}\n\n#ラピ態度のおうち`;
-                const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent('https://rapitide.pages.dev/')}`;
+                const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent('https://rapitide.github.io/my-portfolio/')}`;
                 omikujiShareBtn.href = shareUrl;
             }
 
@@ -1169,7 +1169,7 @@
                 hitokotoBtn.addEventListener('click', () => {
                     // 画面のテキストは変更せず、「好きな場合」を押した瞬間に自動でX（Twitter）の投稿画面を表示
                     const shareText = "私はメリンちゃんに本気です。";
-                    const shareUrl = "https://rapitide.pages.dev/";
+                    const shareUrl = "https://rapitide.github.io/my-portfolio/";
                     const xIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
                     
                     // ポップアップブロッカーに引っかからないよう、クリックイベント内で直接新規ウィンドウを開く
