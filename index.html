@@ -190,16 +190,194 @@
             margin-right: 2px;
         }
 
-        /* ===== Visitor Counter (Header) ===== */
-        .header-visitor {
+        /* ===== おみくじセクション ===== */
+        .omikuji-section {
+            grid-column: 1 / -1; /* 2カラムをまたぐ */
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px dashed #e2e8f0;
+            border-radius: 24px;
+            padding: 28px 24px;
+            text-align: center;
+            margin-bottom: 12px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            margin-right: 12px;
+            justify-content: center;
+            min-height: 220px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
         }
-        
-        .header-visitor img {
-            height: 20px;
-            border-radius: 4px;
+
+        .omikuji-title {
+            font-size: 0.85rem;
+            color: #a0aec0;
+            margin-bottom: 16px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        /* トリガーボタンコンテナ */
+        .omikuji-trigger-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* おみくじボタン (image_0cc002.png 風) */
+        .omikuji-btn {
+            background-color: #fff;
+            border: 1.5px solid #e02424; /* 赤いボーダーライン */
+            color: #e02424;
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 10px 32px;
+            border-radius: 999px; /* 横長丸（カプセル型） */
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            outline: none;
+            box-shadow: 0 4px 12px rgba(224, 36, 36, 0.06);
+        }
+
+        .omikuji-btn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 6px 16px rgba(224, 36, 36, 0.12);
+            background-color: rgba(224, 36, 36, 0.01);
+        }
+
+        .omikuji-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 押してみて (image_0cc002.png 風) */
+        .omikuji-hint {
+            font-size: 0.88rem;
+            color: #2b6cb0; /* 薄青 */
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        /* 結果表示カード */
+        .omikuji-result-card {
+            display: none; /* 初期は非表示 */
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.4s ease-out forwards;
+            width: 100%;
+        }
+
+        /* 〇吉ボックス (image_0cc060.png 風) */
+        .omikuji-box {
+            border: 3.5px solid #e02424; /* 太い赤枠 */
+            border-radius: 12px; /* 角丸四角形 */
+            background: #fff;
+            padding: 8px 36px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #e02424;
+            display: inline-block;
+            margin-bottom: 16px;
+            min-width: 150px;
+            text-align: center;
+            position: relative;
+            letter-spacing: 0.15em;
+            box-shadow: 0 0 18px rgba(224, 36, 36, 0.12); /* 赤いうっすら光るシャドウ */
+        }
+
+        .omikuji-box.shuffling {
+            animation: shake 0.15s infinite alternate;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(0px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            55% { transform: translate(-1px, 2px) rotate(-1deg); }
+            70% { transform: translate(-3px, 1px) rotate(0deg); }
+            85% { transform: translate(1px, 1px) rotate(-1deg); }
+            100% { transform: translate(-1px, -2px) rotate(0deg); }
+        }
+
+        /* ポエムな一言 */
+        .omikuji-poem {
+            font-size: 0.95rem;
+            color: #2d3748;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            font-weight: 500;
+            max-width: 480px;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.4s ease 0.2s;
+        }
+
+        .omikuji-poem.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Xシェアボタン */
+        .omikuji-share-btn {
+            background-color: #0f1419; /* Xロゴ色 */
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 8px 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.4s ease 0.4s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .omikuji-share-btn.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .omikuji-share-btn:hover {
+            background-color: #272c30;
+            transform: translateY(-1px);
+        }
+
+        .omikuji-share-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        /* もう一度引く */
+        .omikuji-retry {
+            margin-top: 14px;
+            font-size: 0.75rem;
+            color: #a0aec0;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.2s;
+            opacity: 0;
+            transition: all 0.4s ease 0.5s;
+        }
+
+        .omikuji-retry.visible {
+            opacity: 1;
+        }
+
+        .omikuji-retry:hover {
+            color: #4a5568;
         }
 
         /* ===== Section Spacing ===== */
@@ -451,6 +629,21 @@
             .sns-icons {
                 gap: 12px;
             }
+
+            .omikuji-section {
+                padding: 24px 16px;
+                min-height: 190px;
+            }
+
+            .omikuji-btn {
+                font-size: 1rem;
+                padding: 8px 24px;
+            }
+
+            .omikuji-box {
+                font-size: 1.5rem;
+                padding: 6px 28px;
+            }
         }
     </style>
 </head>
@@ -465,11 +658,6 @@
                 <div class="header-name">ラピ態度</div>
                 <div class="header-id">@Rptied</div>
             </div>
-        </div>
-        
-        <!-- ヘッダー用訪問者カウンター (外部のバッジサービスを使用) -->
-        <div class="header-visitor" title="これまでの訪問者数">
-            <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Frapitide.pages.dev&count_bg=%23111111&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=%E8%A8%AA%E5%95%8F%E8%80%85&edge_flat=true" alt="訪問者数">
         </div>
 
         <div class="sns-icons">
@@ -510,6 +698,33 @@
         <!-- ================= HOME PAGE ================= -->
         <div id="page-home" class="page active">
             <div class="main">
+                
+                <!-- おみくじセクション (2カラムぶち抜き) -->
+                <div class="omikuji-section">
+                    <div class="omikuji-title">⛩️ ラピ態度おみくじ</div>
+                    
+                    <!-- 起動ボタンコンテナ -->
+                    <div class="omikuji-trigger-container" id="omikuji-trigger-container">
+                        <button class="omikuji-btn" id="omikuji-btn">
+                            ⛩️ 今日の運勢は？
+                        </button>
+                        <span class="omikuji-hint">押してみて</span>
+                    </div>
+
+                    <!-- 結果表示コンテナ -->
+                    <div class="omikuji-result-card" id="omikuji-result-card">
+                        <div class="omikuji-box" id="omikuji-box">-</div>
+                        <div class="omikuji-poem" id="omikuji-poem"></div>
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="omikuji-share-btn" id="omikuji-share-btn">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                            結果をXでポストする
+                        </a>
+                        <div class="omikuji-retry" id="omikuji-retry">もう一度引く</div>
+                    </div>
+                </div>
+
                 <!-- 左カラム -->
                 <div>
                     <div class="section">
@@ -779,6 +994,117 @@
             if (headerLeft) {
                 headerLeft.addEventListener('click', () => {
                     switchPage('home');
+                });
+            }
+
+            // --- 4. おみくじ機能ロジック ---
+            const omikujiBtn = document.getElementById('omikuji-btn');
+            const triggerContainer = document.getElementById('omikuji-trigger-container');
+            const resultCard = document.getElementById('omikuji-result-card');
+            const omikujiBox = document.getElementById('omikuji-box');
+            const omikujiPoem = document.getElementById('omikuji-poem');
+            const omikujiShareBtn = document.getElementById('omikuji-share-btn');
+            const omikujiRetry = document.getElementById('omikuji-retry');
+
+            // 運勢リストとそれぞれのポエム
+            const fortunes = [
+                {
+                    result: "大吉",
+                    poems: [
+                        "追いかけなくても、不思議と向こうから物事が噛み合ってくる日になるに違いない。",
+
+                    ]
+                },
+                {
+                    result: "中吉",
+                    poems: [
+                        "大きな奇跡はなくても、静かになんかうまくいくが続く日になるだろう。",
+
+                    ]
+                },
+                {
+                    result: "吉",
+                    poems: [
+                        "何気ない日常ほど、あとから思い返した時に効くものはない。今日はたぶん、そんな日。",
+
+                    ]
+                },
+                {
+                    result: "小吉",
+                    poems: [
+                        "特別なことは起きなくても、穏やかに終わる一日にはものすごい価値がある。焦らなくていい日。",
+
+                    ]
+                },
+                {
+                    result: "末吉",
+                    poems: [
+                        "まだ流れは途中。今は答え合わせじゃなく、伏線が置かれている時間なのかもしれない。",
+
+                    ]
+                },
+                {
+                    result: "凶",
+                    poems: [
+                        "思うように進まない日。けれど、そういう日に限って、自分でも気づかなかった本音が浮かび上がってくる。",
+
+                    ]
+                }
+            ];
+
+            if (omikujiBtn) {
+                omikujiBtn.addEventListener('click', () => {
+                    // 表示の切り替え
+                    triggerContainer.style.display = 'none';
+                    resultCard.style.display = 'flex';
+                    
+                    // シャッフル（パラパラ表示）アニメーション
+                    omikujiBox.classList.add('shuffling');
+                    let shuffleCount = 0;
+                    const shuffleInterval = setInterval(() => {
+                        const randomFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+                        omikujiBox.textContent = randomFortune.result;
+                        shuffleCount++;
+                        
+                        if (shuffleCount > 10) { // 約0.8秒でストップ
+                            clearInterval(shuffleInterval);
+                            omikujiBox.classList.remove('shuffling');
+                            showResult();
+                        }
+                    }, 80);
+                });
+            }
+
+            function showResult() {
+                // 最終結果の抽選
+                const finalFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+                const finalPoem = finalFortune.poems[Math.floor(Math.random() * finalFortune.poems.length)];
+                
+                omikujiBox.textContent = finalFortune.result;
+                omikujiPoem.textContent = `“ ${finalPoem} ”`;
+                
+                // フェードインエフェクト
+                setTimeout(() => {
+                    omikujiPoem.classList.add('visible');
+                    omikujiShareBtn.classList.add('visible');
+                    omikujiRetry.classList.add('visible');
+                }, 100);
+
+                // Xシェア用インテントリンク設定 (URLエンコード)
+                const shareText = `今日のラピ態度おみくじの結果は【${finalFortune.result}】でした！\n\n${finalPoem}\n\n#ラピ態度のおうち`;
+                const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent('https://rapitide.pages.dev/')}`;
+                omikujiShareBtn.href = shareUrl;
+            }
+
+            // もう一度引く
+            if (omikujiRetry) {
+                omikujiRetry.addEventListener('click', () => {
+                    omikujiPoem.classList.remove('visible');
+                    omikujiShareBtn.classList.remove('visible');
+                    omikujiRetry.classList.remove('visible');
+                    resultCard.style.display = 'none';
+                    triggerContainer.style.display = 'flex';
+                    omikujiBox.textContent = "-";
                 });
             }
         });
