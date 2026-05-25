@@ -16,7 +16,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="ラピ態度のおうち">
-    <meta name="twitter:description" content="ラピ態度さん、あなた謎すぎるんですよ🥴">
+    <meta name="twitter:description" content="薄く広い、スーパー飽き性、何者かになりたい大学生のポートフォリオ。">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
@@ -188,6 +188,57 @@
         .info-label {
             color: #888;
             margin-right: 2px;
+        }
+
+        /* ===== ひとことセクション ===== */
+        .hitokoto-section {
+            grid-column: 1 / -1; /* 2カラムをまたぐ */
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            text-align: left;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .hitokoto-title {
+            font-size: 1.5rem;
+            color: #4a5568;
+            font-weight: 400;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 16px;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+
+        .hitokoto-content {
+            font-size: 1.25rem;
+            color: #1a202c;
+            margin-bottom: 16px;
+            font-weight: 500;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .hitokoto-action-container {
+            text-align: right;
+        }
+
+        .hitokoto-link {
+            color: #2b6cb0;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            user-select: none;
+            transition: color 0.2s;
+        }
+
+        .hitokoto-link:hover {
+            color: #1a365d;
         }
 
         /* ===== おみくじセクション ===== */
@@ -494,7 +545,7 @@
             pointer-events: auto;
         }
 
-        /* メニュー項目 */
+        /* ===== メニュー項目 ===== */
         .menu-item {
             width: 100%;
             background: transparent;
@@ -699,6 +750,15 @@
         <div id="page-home" class="page active">
             <div class="main">
                 
+                <!-- ひとことセクション (2カラムぶち抜き) -->
+                <div class="hitokoto-section">
+                    <div class="hitokoto-title">ひとこと</div>
+                    <div class="hitokoto-content" id="hitokoto-text">本当はメリンちゃんのこと好きなんでしょ😏</div>
+                    <div class="hitokoto-action-container">
+                        <span class="hitokoto-link" id="hitokoto-btn">好きな場合</span>
+                    </div>
+                </div>
+
                 <!-- おみくじセクション (2カラムぶち抜き) -->
                 <div class="omikuji-section">
                     <div class="omikuji-title">⛩️ ラピ態度おみくじ</div>
@@ -1011,43 +1071,37 @@
                 {
                     result: "大吉",
                     poems: [
-                        "追いかけなくても、不思議と向こうから物事が噛み合ってくる日になるに違いない。",
-
+                        "追いかけなくても、不思議と向こうから物事情が噛み合ってくる日になるに違いない。",
                     ]
                 },
                 {
                     result: "中吉",
                     poems: [
                         "大きな奇跡はなくても、静かになんかうまくいくが続く日になるだろう。",
-
                     ]
                 },
                 {
                     result: "吉",
                     poems: [
                         "何気ない日常ほど、あとから思い返した時に効くものはない。今日はたぶん、そんな日。",
-
                     ]
                 },
                 {
                     result: "小吉",
                     poems: [
                         "特別なことは起きなくても、穏やかに終わる一日にはものすごい価値がある。焦らなくていい日。",
-
                     ]
                 },
                 {
                     result: "末吉",
                     poems: [
                         "まだ流れは途中。今は答え合わせじゃなく、伏線が置かれている時間なのかもしれない。",
-
                     ]
                 },
                 {
                     result: "凶",
                     poems: [
                         "思うように進まない日。けれど、そういう日に限って、自分でも気づかなかった本音が浮かび上がってくる。",
-
                     ]
                 }
             ];
@@ -1105,6 +1159,21 @@
                     resultCard.style.display = 'none';
                     triggerContainer.style.display = 'flex';
                     omikujiBox.textContent = "-";
+                });
+            }
+
+            // --- 5. ひとこと機能ロジック ---
+            const hitokotoBtn = document.getElementById('hitokoto-btn');
+
+            if (hitokotoBtn) {
+                hitokotoBtn.addEventListener('click', () => {
+                    // 画面のテキストは変更せず、「好きな場合」を押した瞬間に自動でX（Twitter）の投稿画面を表示
+                    const shareText = "私はメリンちゃんに本気です。";
+                    const shareUrl = "https://rapitide.pages.dev/";
+                    const xIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+                    
+                    // ポップアップブロッカーに引っかからないよう、クリックイベント内で直接新規ウィンドウを開く
+                    window.open(xIntentUrl, '_blank', 'noopener,noreferrer');
                 });
             }
         });
