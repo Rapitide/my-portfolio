@@ -1,81 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ラピ態度</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: sans-serif;
-            background: #fff;
-        }
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 60px;
-            background: #fafafa;
-            border-bottom: 1.5px solid #ddd;
-            display: flex;
-            align-items: center;
-            z-index: 100;
-        }
-        .navbar .icon {
-            margin-left: 18px;
-            font-size: 2.2rem;
-            cursor: pointer;
-            user-select: none;
-        }
-        .navbar .title {
-            margin-left: 18px;
-            font-size: 1.5rem;
-            letter-spacing: 0.1em;
-        }
-        .navbar .spacer {
-            flex: 1;
-        }
-        .navbar .right-icons {
-            display: flex;
-            align-items: center;
-            margin-right: 24px;
-        }
-        .navbar .right-icons span {
-            font-size: 1.7rem;
-            margin-left: 18px;
-            cursor: pointer;
-        }
-        .content {
-            margin-top: 70px;
-            padding: 24px;
-        }
-    </style>
-</head>
-<body>
-    <div class="navbar">
-        <span class="icon" id="homeIcon">🐰</span>
-        <span class="title">うさぎ態度</span>
-        <div class="spacer"></div>
-        <div class="right-icons">
-            <span title="地球">🌏</span>
-            <span title="閉じる">✖️</span>
-        </div>
-    </div>
-    <div class="content">
-        <!-- ここにメインコンテンツを記述 -->
-    </div>
-    <script>
-        document.getElementById('homeIcon').onclick = function() {
-            window.location.href = 'index.html';
-        };
-    </script>
-</body>
-</html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -96,6 +20,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
         * {
             margin: 0;
@@ -120,6 +45,7 @@
         /* ===== ページ切り替え用コンテナ ===== */
         .page-container {
             flex: 1;
+            margin-top: 80px; /* ヘッダーの高さ＋余白 */
         }
 
         .page {
@@ -142,62 +68,70 @@
             }
         }
 
-        /* ===== Header ===== */
+        /* ===== 統合された新しいHeader ===== */
         .header {
-            text-align: center;
-            padding: 48px 24px 32px;
-            background: transparent;
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
+            height: 60px;
+            background: rgba(250, 250, 250, 0.9);
+            backdrop-filter: blur(8px);
+            border-bottom: 1.5px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
             z-index: 100;
             box-sizing: border-box;
         }
 
-        .header-logo {
-            width: 60px;
-            height: 60px;
-            margin: 0 0 0 18px;
+        .header-left {
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            background: transparent;
-            border: none;
-            border-radius: 32px;
-            box-shadow: none;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            position: absolute;
-            top: 10px;
-            left: 0;
             cursor: pointer;
-            padding: 0;
+            transition: opacity 0.2s;
+        }
+
+        .header-left:hover {
+            opacity: 0.7;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: transparent;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .header-logo:hover {
-            background: rgba(0, 0, 0, 0.02); /* ホバーした時に少しだけうっすらと丸く影ができるお洒落エフェクト */
-            transform: scale(1.05); /* 枠線が消えた代わりにホバーで少しだけぷくっと拡大するエフェクト */
+            background: rgba(0, 0, 0, 0.05);
+            transform: scale(1.05);
+        }
+
+        .header-logo svg {
+            width: 28px;
+            height: 28px;
+            display: block;
         }
 
         .header-name {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: #111;
-            margin-top: 0;
-            margin-left: 80px;
-            text-align: left;
-            position: relative;
-            top: 18px;
+            margin-left: 10px;
             letter-spacing: 0.1em;
         }
 
         /* ===== SNS Icons ===== */
         .sns-icons {
             display: flex;
-            justify-content: center;
             align-items: center;
             gap: 16px;
-            margin-top: 14px;
         }
 
         .sns-icons a {
@@ -221,7 +155,7 @@
         .main {
             max-width: 820px;
             margin: 0 auto;
-            padding: 20px 32px 100px; /* 下部メニューの余白 */
+            padding: 20px 32px 100px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 48px;
@@ -278,23 +212,11 @@
             font-weight: bold;
         }
 
-        /* ===== Link style ===== */
-        a.text-link {
-            color: #2563eb;
-            text-decoration: none;
-            transition: opacity 0.2s;
-        }
-
-        a.text-link:hover {
-            text-decoration: underline;
-            opacity: 0.8;
-        }
-
-        /* ===== Notes ページ (考え事プレースホルダー) ===== */
+        /* ===== Notes ページ ===== */
         .notes-container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 40px 24px 120px; /* 下部余白 */
+            padding: 40px 24px 120px;
         }
 
         .notes-header {
@@ -325,12 +247,6 @@
             animation: fadeIn 0.5s ease-out;
         }
 
-        .placeholder-icon {
-            font-size: 2.2rem;
-            margin-bottom: 16px;
-            display: block;
-        }
-
         .placeholder-main-text {
             font-size: 1.05rem;
             font-weight: 700;
@@ -338,13 +254,7 @@
             margin-bottom: 8px;
         }
 
-        .placeholder-sub-text {
-            font-size: 0.86rem;
-            color: #888;
-            line-height: 1.6;
-        }
-
-        /* ===== フローティングナビゲーションメニュー (中央配置) ===== */
+        /* ===== フローティングナビゲーションメニュー ===== */
         .floating-menu-container {
             position: fixed;
             bottom: 24px;
@@ -365,7 +275,7 @@
             pointer-events: auto;
         }
 
-        /* コメント吹き出し (中央寄せ) */
+        /* コメント吹き出し */
         .chat-bubble {
             background-color: #1e1e1e;
             color: #fff;
@@ -393,7 +303,6 @@
             pointer-events: auto;
         }
 
-        /* 吹き出しの三角ツノ (中央) */
         .chat-bubble::after {
             content: "";
             position: absolute;
@@ -563,42 +472,53 @@
                 width: 280px;
                 bottom: 170px;
             }
+            
+            .header-name {
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Header (共通パーツ) -->
+    <!-- 新しい Header (猫アイコン＋名前、右側にSNS) -->
     <div class="header">
-        <div class="header-logo" id="header-logo">
-            <!-- 手書き猫画像に差し替え（handcat.pngを想定） -->
-            <img src="handcat.png" alt="手書き猫" style="width: 56px; height: 56px; object-fit: contain; display: block;" />
+        <div class="header-left" id="header-left">
+            <div class="header-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 21c-3.5 0-7-1.5-7-5.5s3.5-5.5 7-5.5 7 1.5 7 5.5-3.5 5.5-7 5.5z"/>
+                    <path d="M5 13.5L3 10l3.5.5"/>
+                    <path d="M19 13.5L21 10l-3.5.5"/>
+                    <path d="M10 15h.01M14 15h.01"/>
+                    <path d="M11 17c.5.5 1.5.5 2 0"/>
+                </svg>
+            </div>
+            <div class="header-name">ラピ態度</div>
         </div>
-        <div class="header-name">ラピ態度</div>
-
-        <div class="sns-icons" style="position: absolute; right: 24px; top: 16px; gap: 16px;">
+        
+        <div class="sns-icons">
             <!-- GitHub -->
             <a href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                <svg viewBox="0 0 24 24" width="28" height="28">
+                <svg viewBox="0 0 24 24">
                     <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
                 </svg>
             </a>
             <!-- X -->
             <a href="https://x.com/Rptied" target="_blank" rel="noopener noreferrer" aria-label="X">
-                <svg viewBox="0 0 24 24" width="28" height="28">
+                <svg viewBox="0 0 24 24">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
             </a>
             <!-- Instagram -->
             <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <svg viewBox="0 0 24 24" width="28" height="28">
+                <svg viewBox="0 0 24 24">
                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
                 </svg>
             </a>
             <!-- YouTube -->
             <a href="https://youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-                <svg viewBox="0 0 24 24" width="28" height="28">
+                <svg viewBox="0 0 24 24">
                     <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                 </svg>
             </a>
@@ -606,7 +526,7 @@
     </div>
 
     <!-- Page Wrapper -->
-    <div class="page-container" style="margin-top: 90px;">
+    <div class="page-container">
 
         <!-- ================= HOME PAGE ================= -->
         <div id="page-home" class="page active">
@@ -706,7 +626,7 @@
             </div>
         </div>
 
-        <!-- ================= NOTES PAGE (ゆるプレースホルダー) ================= -->
+        <!-- ================= NOTES PAGE ================= -->
         <div id="page-notes" class="page">
             <div class="notes-container">
                 <div class="notes-header">
@@ -716,7 +636,6 @@
                     </div>
                 </div>
 
-                <!-- 気が向いたら書くよボード -->
                 <div class="notes-placeholder-card">
                     <p class="placeholder-main-text">気が向いたら書くよ。</p>
                 </div>
@@ -725,13 +644,12 @@
 
     </div>
 
-    <!-- ================= FLOATING NAVIGATION MENU (中央配置) ================= -->
+    <!-- ================= FLOATING NAVIGATION MENU ================= -->
     <div class="floating-menu-container" id="floating-menu-container">
         
-        <!-- コメント吹き出し（What's this? で表示） -->
+        <!-- コメント吹き出し -->
         <div class="chat-bubble" id="chat-bubble">
             <div class="chat-avatar">
-                <!-- 自作猫アイコン（ラピ態度のアイコン） -->
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 21c-3 0-5.5-1.2-5.5-4.5s2.5-4.5 5.5-4.5 5.5 1.2 5.5 4.5-2.5 4.5-5.5 4.5z"/>
                     <path d="M6 11L4 8.5l2.5.5"/>
@@ -740,7 +658,6 @@
                     <path d="M11 16.2c.3.3.7.3 1 0"/>
                 </svg>
             </div>
-            <!-- お気に入りの文章に復元 -->
             <div class="chat-text">
                 ラピ態度の個人ウェブサイトへようこそ( ৹･֊･৹)　
                 Notesにブログっぽいもの載せたりできたらいいなぁと思ってます
@@ -807,18 +724,17 @@
     <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // DOM要素の取得
             const menuTrigger = document.getElementById('menu-trigger');
             const menuCard = document.getElementById('menu-card');
             const chatBubble = document.getElementById('chat-bubble');
             const btnWhatsThis = document.getElementById('btn-whats-this');
             const btnNavHome = document.getElementById('btn-nav-home');
             const btnNavNotes = document.getElementById('btn-nav-notes');
-            const headerLogo = document.getElementById('header-logo');
+            const headerLeft = document.getElementById('header-left');
             const pageHome = document.getElementById('page-home');
             const pageNotes = document.getElementById('page-notes');
 
-            // --- 1. メニュー開閉制御 (中央寄せ版) ---
+            // --- 1. メニュー開閉制御 ---
             menuTrigger.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const isOpen = menuCard.classList.contains('active');
@@ -830,14 +746,12 @@
                 }
             });
 
-            // 全て閉じる関数
             function closeAll() {
                 menuCard.classList.remove('active');
                 chatBubble.classList.remove('active');
                 menuTrigger.classList.remove('active');
             }
 
-            // メニュー外タップで閉じる
             document.addEventListener('click', (e) => {
                 const container = document.getElementById('floating-menu-container');
                 if (!container.contains(e.target)) {
@@ -873,14 +787,13 @@
             btnNavHome.addEventListener('click', () => switchPage('home'));
             btnNavNotes.addEventListener('click', () => switchPage('notes'));
 
-            // --- 4. ヘッダーの猫アイコンでHomeに戻る ---
-            if (headerLogo) {
-                headerLogo.addEventListener('click', () => {
+            // --- 4. ヘッダーのロゴ部分でHomeに戻る ---
+            if (headerLeft) {
+                headerLeft.addEventListener('click', () => {
                     switchPage('home');
                 });
             }
         });
     </script>
 </body>
-
 </html>
