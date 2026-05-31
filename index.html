@@ -1600,7 +1600,7 @@
                         <ul class="item-list">
                             <li>言葉探し</li>
                             <li>多方面のバイト</li>
-                            <li>多方面の映画視聴</li>
+                            <li>多方面 of 映画視聴</li>
                             <li>資格・免許取得</li>
                             <li>一人旅行</li>
                             <li>音楽の勉強</li>
@@ -1978,13 +1978,13 @@
             let currentThumbnail = "";
 
             // 共有オンラインデータベースのURL (設定不要で全ユーザーに即時自動反映)
-            const DB_URL = "https://kvdb.io/tdn_notes_e4a3b8c9/notes";
+            const DB_URL = "https://kvdb.io/tdn_rptied_blog_9f2a4c8e/notes";
             let cachedNotes = []; // メモリ上に記事データをキャッシュしておく変数
 
             // 共有オンラインデータベースから記事データを取得する（非同期）
             async function fetchNotes() {
                 try {
-                    const res = await fetch(DB_URL);
+                    const res = await fetch(DB_URL, { cache: 'no-store' });
                     if (res.ok) {
                         const data = await res.json();
                         cachedNotes = data || [];
@@ -1992,9 +1992,11 @@
                         // まだデータが作成されていない場合は、空配列で初期化
                         cachedNotes = [];
                         await saveNotesOnline(cachedNotes);
+                    } else {
+                        throw new Error(`Status: ${res.status}`);
                     }
                 } catch (err) {
-                    console.error('記事データの取得に失敗しました。ローカルキャッシュを使用します:', err);
+                    console.error('記事データの取得に失敗しました:', err);
                     // オフライン時のフォールバックとして localStorage を使用
                     const stored = localStorage.getItem('rapitide_notes_backup');
                     cachedNotes = stored ? JSON.parse(stored) : [];
@@ -2008,8 +2010,10 @@
                 try {
                     const res = await fetch(DB_URL, {
                         method: 'PUT',
+                        // application/json を指定するとCORSのプリフライトでブロックされる可能性があるため、
+                        // text/plain または指定なしで送信してCORSプリフライトを回避します
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'text/plain'
                         },
                         body: JSON.stringify(notes)
                     });
@@ -2018,7 +2022,7 @@
                     }
                 } catch (err) {
                     console.error('データベースへの保存に失敗しました:', err);
-                    alert('⚠️ データベースへの保存（同期）に失敗しました。オフライン状態か、サービスの一時的なエラーの可能性があります。');
+                    alert(`⚠️ データベースへの保存（同期）に失敗しました。\n詳細: ${err.message || err}`);
                 }
             }
 
