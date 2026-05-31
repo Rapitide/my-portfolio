@@ -1512,7 +1512,7 @@
                     </div>
                 </div>
                 <div class="notes-placeholder-card">
-                    <p class="placeholder-main-text">ラピ態度の個人ウェブサイトへようこそ( ৹･֊･৹)</p>
+                    <p class="placeholder-main-text">ラピ態度個人ウェブサイトへようこそ( ৹･֊･৹)</p>
                     <p style="color: #666; font-size: 0.9rem; margin-top: 8px;">色々作って載せていく予定です。</p>
                 </div>
             </div>
@@ -1648,16 +1648,34 @@
                     </div>
 
                     <!-- 管理者ログインフォーム -->
-                    <div class="admin-login-panel" id="admin-login-panel">
-                        <input type="password" class="admin-input" id="admin-password-input" placeholder="パスワードを入力してください (初期値: admin)">
-                        <button class="admin-btn" id="admin-login-btn">ログイン</button>
+                    <div class="admin-login-panel" id="admin-login-panel" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                        <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
+                            <input type="password" class="admin-input" id="admin-password-input" placeholder="パスワードを入力してください" style="flex: 1;">
+                            <button class="admin-btn" id="admin-login-btn">ログイン</button>
+                        </div>
+                        <!-- 自動デプロイ用 GitHub トークン設定 -->
+                        <div id="github-token-container" style="display: none; border-top: 1px solid #eee; padding-top: 12px; margin-top: 8px; width: 100%; text-align: left;">
+                            <label style="font-size: 0.78rem; color: #475569; font-weight: 700; display: block; margin-bottom: 6px;">🚀 自動デプロイ設定 (GitHub トークン)</label>
+                            <div style="display: flex; gap: 8px; width: 100%;">
+                                <input type="password" class="admin-input" id="github-token-input" placeholder="github_pat_..." style="flex: 1; font-size: 0.8rem;">
+                                <button class="admin-btn" id="save-token-btn" style="background: #10b981; font-weight: 700;">設定保存</button>
+                            </div>
+                            <span style="font-size: 0.72rem; color: #64748b; display: block; margin-top: 6px; line-height: 1.4;">
+                                トークンを設定しておくと、エディタで「公開する」を押した瞬間にブラウザからGitHubへ自動でコミット＆プッシュされ、1〜2分ですべてのユーザーに見えるようにデプロイされます！
+                                <a href="https://github.com/settings/tokens/new?scopes=public_repo" target="_blank" style="color: #2b6cb0; text-decoration: underline;">ここからトークンを作成 (public_repo権限が必要)</a>
+                            </span>
+                        </div>
                     </div>
 
                     <!-- 管理者用ツールバー (ログイン時のみ表示) -->
-                    <div class="notes-toolbar" style="margin-top: 16px;">
+                    <div class="notes-toolbar" style="margin-top: 16px; display: flex; gap: 12px; align-items: center;">
                         <button class="write-note-btn" id="write-note-btn">
                             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
                             新規執筆
+                        </button>
+                        <button class="write-note-btn" id="export-notes-btn" style="display: none; background: #2b6cb0; border-color: #2b6cb0;" title="他端末でも見られるようにデプロイ用コードをコピーします">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                            他端末へ反映用コピー
                         </button>
                     </div>
                 </div>
@@ -1848,6 +1866,8 @@
     <!-- Footer -->
     <footer>
         <p>All rights reserved &copy; ラピ態度のおうち</p>
+    </footer>
+
     <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -1928,6 +1948,11 @@
             const adminLoginBtn = document.getElementById('admin-login-btn');
             const writeNoteBtn = document.getElementById('write-note-btn');
             
+            // 自動デプロイ設定関連UI
+            const githubTokenContainer = document.getElementById('github-token-container');
+            const githubTokenInput = document.getElementById('github-token-input');
+            const saveTokenBtn = document.getElementById('save-token-btn');
+            
             // エディタUI
             const editorModal = document.getElementById('editor-modal');
             const editorModalTitle = document.getElementById('editor-modal-title');
@@ -1971,33 +1996,46 @@
             let currentThumbnail = "";
 
             // サンプルデータ
-            const defaultNotes = [
-                {
-                    id: "1",
-                    title: "AIコーディングの可能性と、これからの個人開発について",
-                    thumbnail: "image_0c53e7.png",
-                    content: "<h2>AIコーディングの台頭</h2><p>最近、AIを使ってコーディングをする時間が劇的に増えた。</p><p>昔なら数日かかっていたプロトタイプの作成が、今や数時間、いや数十分で終わることもある。</p><h3>圧倒的な開発速度の向上</h3><p>この圧倒的な開発速度の向上は、個人開発者の「アイデアを形にする力」を何倍にも引き上げてくれている。</p><p>MacBookを持っていなくてiOSアプリがビルドできない葛藤はあるけれど、Web技術を極めればかなりのことができるはず。</p><div class=\"embedded-youtube-container\" contenteditable=\"false\"><iframe src=\"https://www.youtube.com/embed/dQw4w9WgXcQ\" allowfullscreen=\"\"></iframe></div><p><br></p><h2>これからの開発者に求められるもの</h2><p>これからの開発者に求められるのは、構文を暗記することではなく、「何をどう組み合わせるか」という抽象的な設計力と、ユーザーの体験に徹底的にこだわる美意識なんだろうな。</p><blockquote contenteditable=\"false\"><div contenteditable=\"true\" placeholder=\"引用文を入力...\">プログラミングの本質は、コードを書くことではなく、課題を解決することである。</div><cite contenteditable=\"true\">— どっかの賢い人</cite></blockquote><p><br></p><ul><li>抽象的な設計力の重要性</li><li>徹底的な美意識</li><li>ユーザーの体験へのこだわり</li></ul><div class=\"code-block-wrapper\" contenteditable=\"false\"><div class=\"code-block-lang\" contenteditable=\"true\">javascript</div><pre class=\"code-block\"><code contenteditable=\"true\">// 思考を即座に形にするための魔法のコード\nconst speedup = (idea) => {\n  return Promise.resolve(idea);\n};\nspeedup('個人開発').then(console.log);</code></pre></div><p><br></p><p>ぜひ色々書いてみよう！</p>",
-                    tags: "思考,技術,AI",
-                    date: "2026.05.30"
-                },
-                {
-                    id: "2",
-                    title: "飽き性であることは、本当に「弱み」なのだろうか？",
-                    thumbnail: "",
-                    content: "<h2>自分の「飽き性」と向き合う</h2><p>自分のプロフィールにも書いている通り、自分はかなりの飽き性だ。</p><p>興味があることも「言葉」「心理学」「アプリ開発」「ゲーム開発」「音楽制作」「3DCG」など、多方面に散らばっている。</p><h3>伝統的な美徳への疑問</h3><p>一般的には「一つのことを極めるのが美徳」とされがちだし、長続きしない自分に劣等感を抱くこともあった。</p><p>でも、心理学やイノベーションの歴史を調べていくと、全く異なる分野の知識が交差した瞬間に、新しいアイデアが生まれることが多いと知った。</p><blockquote contenteditable=\"false\"><div contenteditable=\"true\" placeholder=\"引用文を入力...\">点と点（ドット）を繋ぎ合わせること。異なる体験や知識が交錯するところにクリエイティビティは宿る。</div><cite contenteditable=\"true\">— スティーブ・ジョブズ風の考え方</cite></blockquote><p><br></p><h2>点を集める時間</h2><p>薄く広く知っているということは、それだけ多くの点（ドット）を持っているということ。</p><p>いつかその点と点がつながって、自分だけのユニークな線になる日が来るかもしれない。</p><ol><li>飽きることを恐れない</li><li>面白いと思ったものに片っ端から手を出す</li><li>多角的な視点を手に入れる</li></ol><p>だから、今は飽きることを恐れず、面白いと思ったものに片っ端から手を出していこうと思う。</p><p><br></p><a href=\"#\" class=\"embedded-blog-card\" contenteditable=\"false\" onclick=\"showNoteDetail('1'); return false;\"><img class=\"blog-card-thumb\" src=\"image_0c53e7.png\"><div class=\"blog-card-content\"><div class=\"blog-card-title\">AIコーディングの可能性と、これからの個人開発について</div><div class=\"blog-card-meta\"><span class=\"note-card-tag\">思考</span><span>2026.05.30</span></div></div></a><p><br></p>",
-                    tags: "心理学,思考",
-                    date: "2026.05.28"
-                }
-            ];
+            const defaultNotes = [];
 
-            // 記事データのロード
+            // 記事データのロードと他端末との自動マージ同期
             function getNotes() {
+                // 一般ユーザー（非ログイン）は、キャッシュ不整合を防ぐため常に最新の defaultNotes を直接参照する
+                if (!isAdmin) {
+                    return defaultNotes;
+                }
+
                 const stored = localStorage.getItem('rapitide_notes');
                 if (!stored) {
                     localStorage.setItem('rapitide_notes', JSON.stringify(defaultNotes));
                     return defaultNotes;
                 }
-                return JSON.parse(stored);
+                
+                const localNotes = JSON.parse(stored);
+                let isUpdated = false;
+                const mergedNotes = [...localNotes];
+                
+                // コミットされた最新の defaultNotes があれば、ローカルのキャッシュとマージして同期する
+                defaultNotes.forEach(defNote => {
+                    const exists = mergedNotes.some(n => n.id === defNote.id);
+                    if (!exists) {
+                        mergedNotes.push(defNote);
+                        isUpdated = true;
+                    } else {
+                        const idx = mergedNotes.findIndex(n => n.id === defNote.id);
+                        if (idx !== -1 && JSON.stringify(mergedNotes[idx]) !== JSON.stringify(defNote)) {
+                            mergedNotes[idx] = defNote;
+                            isUpdated = true;
+                        }
+                    }
+                });
+
+                if (isUpdated) {
+                    localStorage.setItem('rapitide_notes', JSON.stringify(mergedNotes));
+                    return mergedNotes;
+                }
+                
+                return localNotes;
             }
 
             // 記事データの保存
@@ -2309,6 +2347,9 @@
                     `;
                     adminLoginTrigger.style.color = '#888';
                     writeNoteBtn.classList.remove('visible');
+                    const exportNotesBtn = document.getElementById('export-notes-btn');
+                    if (exportNotesBtn) exportNotesBtn.style.display = 'none';
+                    if (githubTokenContainer) githubTokenContainer.style.display = 'none';
                     adminLoginPanel.classList.remove('active');
                     renderNotesList();
                 } else {
@@ -2341,11 +2382,40 @@
                     `;
                     adminLoginTrigger.style.color = '#e53e3e';
                     writeNoteBtn.classList.add('visible');
+                    
+                    const exportNotesBtn = document.getElementById('export-notes-btn');
+                    if (exportNotesBtn) exportNotesBtn.style.display = 'inline-flex';
+                    
+                    // トークン設定UIの表示とトークンロード
+                    if (githubTokenContainer) {
+                        githubTokenContainer.style.display = 'block';
+                        const savedToken = localStorage.getItem('rapitide_github_token');
+                        if (savedToken && githubTokenInput) {
+                            githubTokenInput.value = savedToken;
+                        }
+                    }
+                    
                     renderNotesList();
                     alert('管理者としてログインしました。執筆と記事の管理が可能です。');
                 } else {
                     alert('パスワードが正しくありません。');
                 }
+            }
+
+            // トークンの設定保存イベント
+            if (saveTokenBtn) {
+                saveTokenBtn.addEventListener('click', () => {
+                    if (githubTokenInput) {
+                        const token = githubTokenInput.value.trim();
+                        if (token) {
+                            localStorage.setItem('rapitide_github_token', token);
+                            alert('【🚀 GitHub トークン保存完了】\n\n自動デプロイ用のトークンを設定しました。今後は「公開する」を押すだけで自動デプロイが実行されます！');
+                        } else {
+                            localStorage.removeItem('rapitide_github_token');
+                            alert('トークンを削除しました。自動デプロイは無効になり、手動同期になります。');
+                        }
+                    }
+                });
             }
 
             // --- ツールバーボタンのアクティブ状態判定・反映 ---
@@ -2781,7 +2851,7 @@
             });
 
             // 保存（公開）処理
-            editorSaveBtn.addEventListener('click', () => {
+            editorSaveBtn.addEventListener('click', async () => {
                 const title = editorTitleInput.value.trim();
                 const content = editorContentInput.innerHTML.trim();
 
@@ -2797,6 +2867,7 @@
                 const formattedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
 
                 const tagStr = activeTags.join(',');
+                const savedEditingId = currentEditingNoteId; // IDを一時保存！
 
                 if (currentEditingNoteId) {
                     notes = notes.map(note => {
@@ -2828,13 +2899,20 @@
                 closeEditor();
                 renderNotesList();
                 
-                if (notesDetailView.classList.contains('active') && currentEditingNoteId) {
-                    showNoteDetail(currentEditingNoteId);
+                // 退避したIDを使って詳細画面を瞬時にリフレッシュ！
+                if (notesDetailView.classList.contains('active') && savedEditingId) {
+                    showNoteDetail(savedEditingId);
+                }
+
+                // GitHubへの自動コミット・デプロイを非同期で実行（トークンが設定されている場合のみ）
+                const token = localStorage.getItem('rapitide_github_token');
+                if (token) {
+                    await autoCommitToGitHub(notes);
                 }
             });
 
             // 削除処理
-            function deleteNote(id) {
+            async function deleteNote(id) {
                 if (confirm('この記事を削除してもよろしいですか？')) {
                     let notes = getNotes();
                     notes = notes.filter(note => note.id !== id);
@@ -2844,7 +2922,115 @@
                     if (notesDetailView.classList.contains('active')) {
                         noteBackBtn.click();
                     }
+
+                    // GitHubへの自動コミット・デプロイを非同期で実行（トークンが設定されている場合のみ）
+                    const token = localStorage.getItem('rapitide_github_token');
+                    if (token) {
+                        await autoCommitToGitHub(notes);
+                    }
                 }
+            }
+
+            // GitHubへの自動コミット・デプロイ処理
+            async function autoCommitToGitHub(notes) {
+                const token = localStorage.getItem('rapitide_github_token');
+                if (!token) return;
+
+                const owner = "rapitide"; // GitHub ユーザー名
+                const repo = "my-portfolio"; // リポジトリ名
+                const path = "index.html"; // ファイルパス
+
+                // 保存（公開する）ボタンのUIをローディング状態にする
+                const saveBtn = document.getElementById('editor-save-btn');
+                const originalText = saveBtn.textContent;
+                saveBtn.textContent = '自動デプロイ中...';
+                saveBtn.disabled = true;
+
+                try {
+                    // 1. 最新の index.html 情報を GitHub API から取得
+                    const getUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+                    const res = await fetch(getUrl, {
+                        headers: {
+                            "Authorization": `token ${token}`,
+                            "Accept": "application/vnd.github.v3+json"
+                        }
+                    });
+
+                    if (!res.ok) {
+                        throw new Error(`リポジトリ情報の取得に失敗しました (Status: ${res.status})。\nトークンの権限またはGitHubの設定を確認してください。`);
+                    }
+
+                    const data = await res.json();
+                    const sha = data.sha;
+                    
+                    // Base64デコード（日本語の文字化けを防ぐ堅牢なUTF-8デコード）
+                    const contentBase64 = data.content.replace(/\s/g, '');
+                    const originalHtml = decodeURIComponent(escape(atob(contentBase64)));
+
+                    // 2. index.html 内の defaultNotes の中身を最新の notes で書き換える
+                    const regex = /const\s+defaultNotes\s*=\s*\[[\s\S]*?\];/;
+                    if (!regex.test(originalHtml)) {
+                        throw new Error('index.html内の「const defaultNotes = [...];」の定義パターンが見つかりませんでした。');
+                    }
+
+                    const updatedHtml = originalHtml.replace(regex, `const defaultNotes = ${JSON.stringify(notes, null, 4)};`);
+
+                    // 3. 更新した内容を GitHub API へ PUT して自動コミット＆プッシュ！
+                    const putContentBase64 = btoa(unescape(encodeURIComponent(updatedHtml)));
+                    const commitRes = await fetch(getUrl, {
+                        method: "PUT",
+                        headers: {
+                            "Authorization": `token ${token}`,
+                            "Accept": "application/vnd.github.v3+json",
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            message: `📝 Note記事の自動更新 [System Commit]`,
+                            content: putContentBase64,
+                            sha: sha
+                        })
+                    });
+
+                    if (!commitRes.ok) {
+                        const errData = await commitRes.json();
+                        throw new Error(`GitHubへのコミットに失敗しました: ${errData.message}`);
+                    }
+
+                    alert('【🎉 自動デプロイ成功！】\n\nGitHubリポジトリへの自動コミットが完了しました。\n約1〜2分後にGitHub Pagesのビルドが完了し、世界中のすべてのユーザーに最新記事が自動反映されます！');
+
+                } catch (err) {
+                    console.error('Auto deploy failed: ', err);
+                    alert(`【⚠️ 自動デプロイ失敗】\n\n${err.message}\n\n※ローカルでの保存は成功しているため、必要に応じて「他端末へ反映用コピー」ボタンから手動で貼り付けてデプロイすることも可能です。`);
+                } finally {
+                    saveBtn.textContent = originalText;
+                    saveBtn.disabled = false;
+                }
+            }
+
+            // --- 他端末へ反映用コピー機能 ---
+            const exportNotesBtn = document.getElementById('export-notes-btn');
+            if (exportNotesBtn) {
+                exportNotesBtn.addEventListener('click', () => {
+                    const notes = getNotes();
+                    const codeStr = `const defaultNotes = ${JSON.stringify(notes, null, 4)};`;
+                    
+                    navigator.clipboard.writeText(codeStr).then(() => {
+                        alert('【🎉 デプロイ用コードのコピー完了！】\n\nコピーされたコードを、index.html の「const defaultNotes = [...]」が定義されている部分（1978行目付近）に丸ごと貼り付け（ペースト）して、GitHubにプッシュ（デプロイ）してください。\n\nこれで世界中のすべての端末で、あなたが書いたすべての最新記事が自動同期されて読めるようになります！');
+                    }).catch(err => {
+                        console.error('Clipboard copy failed: ', err);
+                        const tempTextArea = document.createElement('textarea');
+                        tempTextArea.value = codeStr;
+                        document.body.appendChild(tempTextArea);
+                        tempTextArea.select();
+                        try {
+                            document.execCommand('copy');
+                            alert('【🎉 デプロイ用コードのコピー完了！（代替方式）】\n\nコピーされたコードを、index.html の「const defaultNotes = [...]」定義部分（1978行目付近）に丸ごと貼り付けて、GitHubにプッシュ（デプロイ）してください。');
+                        } catch (copyErr) {
+                            alert('コピーに失敗しました。お手数ですが開発者コンソールからコピーしてください。');
+                        }
+                        document.body.removeChild(tempTextArea);
+                    });
+                });
             }
 
             // 初期表示
