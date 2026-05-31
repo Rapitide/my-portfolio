@@ -8,15 +8,17 @@
 
     <!-- OGP -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://rapitide.github.io/my-portfolio/">
+    <meta property="og:url" content="https://rptied-home.vercel.app/">
     <meta property="og:title" content="ラピ態度のおうち">
     <meta property="og:description" content="どっかの大学生のポートフォリオ。">
     <meta property="og:site_name" content="ラピ態度のおうち">
+    <meta property="og:image" content="https://rptied-home.vercel.app/image_0c53e7.png">
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="ラピ態度のおうち">
     <meta name="twitter:description" content="ラピ態度さん、あなた正体不明すぎるんですよ。">
+    <meta name="twitter:image" content="https://rptied-home.vercel.app/image_0c53e7.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
@@ -1890,8 +1892,12 @@
             });
 
             // --- 2. ページ切り替え（ルーティング） ---
-            function switchPage(targetPageId) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+            function switchPage(targetPageId, smooth = true) {
+                if (smooth) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    window.scrollTo({ top: 0 });
+                }
                 
                 pages.forEach(pageId => {
                     const pageEl = document.getElementById(`page-${pageId}`);
@@ -1977,48 +1983,74 @@
             let activeTags = [];
             let currentThumbnail = "";
 
-            // 共有オンラインデータベースのURL (設定不要で全ユーザーに即時自動反映)
-            const DB_URL = "https://kvdb.io/tdn_rptied_blog_9f2a4c8e/notes";
+            // localStorage 安全ラッパー (Safariのプライベートモードやクッキー制限エラーの完全回避用)
+            function safeSetItem(key, value) {
+                try {
+                    localStorage.setItem(key, value);
+                } catch (e) {
+                    console.warn('localStorage.setItem failed:', e);
+                }
+            }
+
+            function safeGetItem(key) {
+                try {
+                    return localStorage.getItem(key);
+                } catch (e) {
+                    console.warn('localStorage.getItem failed:', e);
+                    return null;
+                }
+            }
+
+            // 共有オンラインデータベースのURL (Vercelサーバーレス関数経由 - CORSフリー)
+            const DB_URL = "/api/notes";
             let cachedNotes = []; // メモリ上に記事データをキャッシュしておく変数
 
             // 共有オンラインデータベースから記事データを取得する（非同期）
             async function fetchNotes() {
                 try {
-                    const res = await fetch(DB_URL, { cache: 'no-store' });
+                    const res = await fetch(DB_URL, {
+                        cache: 'no-store',
+                        headers: { 'Accept': 'application/json' }
+                    });
                     if (res.ok) {
                         const data = await res.json();
-                        cachedNotes = data || [];
-                    } else if (res.status === 404) {
-                        // まだデータが作成されていない場合は、空配列で初期化
-                        cachedNotes = [];
-                        await saveNotesOnline(cachedNotes);
+                        cachedNotes = Array.isArray(data) ? data : [];
+                        // 取得成功時にローカルバックアップも更新
+                        safeSetItem('rapitide_notes_backup', JSON.stringify(cachedNotes));
                     } else {
                         throw new Error(`Status: ${res.status}`);
                     }
                 } catch (err) {
-                    console.error('記事データの取得に失敗しました:', err);
+                    console.error('記事データの取得に失敗しました（ローカルキャッシュを使用します）:', err);
                     // オフライン時のフォールバックとして localStorage を使用
-                    const stored = localStorage.getItem('rapitide_notes_backup');
-                    cachedNotes = stored ? JSON.parse(stored) : [];
+                    try {
+                        const stored = safeGetItem('rapitide_notes_backup');
+                        cachedNotes = stored ? JSON.parse(stored) : [];
+                        if (!Array.isArray(cachedNotes)) cachedNotes = [];
+                    } catch (e) {
+                        cachedNotes = [];
+                    }
                 }
-                return cachedNotes;
+                return cachedNotes || [];
             }
 
             // オンラインデータベースへ記事データを保存する（非同期）
             async function saveNotesOnline(notes) {
-                localStorage.setItem('rapitide_notes_backup', JSON.stringify(notes)); // オフライン用バックアップ
+                safeSetItem('rapitide_notes_backup', JSON.stringify(notes)); // オフライン用バックアップ
                 try {
+                    const bodyStr = JSON.stringify(notes);
+                    console.log(`[saveNotesOnline] 送信データサイズ: ${(bodyStr.length / 1024).toFixed(1)} KB`);
                     const res = await fetch(DB_URL, {
                         method: 'PUT',
-                        // application/json を指定するとCORSのプリフライトでブロックされる可能性があるため、
-                        // text/plain または指定なしで送信してCORSプリフライトを回避します
                         headers: {
-                            'Content-Type': 'text/plain'
+                            'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(notes)
+                        body: bodyStr
                     });
                     if (!res.ok) {
-                        throw new Error(`保存に失敗しました (Status: ${res.status})`);
+                        let detail = '';
+                        try { detail = await res.text(); } catch(e) {}
+                        throw new Error(`保存に失敗しました (Status: ${res.status}) ${detail}`);
                     }
                 } catch (err) {
                     console.error('データベースへの保存に失敗しました:', err);
@@ -2028,6 +2060,7 @@
 
             // HTMLから純粋なプレビューテキストを作成する
             function getStripedPreview(html, length = 120) {
+                if (!html) return "";
                 const div = document.createElement("div");
                 div.innerHTML = html;
                 
@@ -2099,9 +2132,10 @@
                 `;
 
                 const notes = await fetchNotes();
+                const notesArr = Array.isArray(notes) ? notes : [];
                 notesList.innerHTML = '';
 
-                if (notes.length === 0) {
+                if (notesArr.length === 0) {
                     notesList.innerHTML = `
                         <div class="notes-placeholder-card">
                             <p class="placeholder-main-text">記事がありません。</p>
@@ -2111,7 +2145,7 @@
                     return;
                 }
 
-                const displayNotes = [...notes].reverse();
+                const displayNotes = [...notesArr].reverse();
 
                 displayNotes.forEach(note => {
                     const card = document.createElement('div');
@@ -2176,7 +2210,7 @@
 
                     card.addEventListener('click', (e) => {
                         if (e.target.closest('.note-action-btn')) return;
-                        showNoteDetail(note.id);
+                        window.location.hash = 'note-' + note.id;
                     });
 
                     notesList.appendChild(card);
@@ -2199,12 +2233,47 @@
 
             // 記事詳細の表示 (非同期対応)
             async function showNoteDetail(id) {
-                const notes = await fetchNotes(); // 常に最新のデータを共有DBからフェッチ
-                const note = notes.find(n => n.id === id);
-                if (!note) return;
+                // 通信を待つ前に、即座に一覧を隠し、詳細画面をアクティブにしてローディングを出す！
+                notesListView.style.display = 'none';
+                notesDetailView.classList.add('active');
+                detailTitle.textContent = "読み込み中...";
+                detailContent.innerHTML = `
+                    <div style="text-align: center; padding: 100px 0; color: #64748b;">
+                        <div style="display: inline-block; width: 36px; height: 36px; border: 3px solid #cbd5e1; border-top-color: #0f1419; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px;"></div>
+                        <div style="font-size: 0.95rem; font-weight: 500; letter-spacing: 0.05em;">NOTEをロード中...</div>
+                    </div>
+                `;
+                detailTag.innerHTML = "";
+                detailDate.textContent = "";
+                const divider = document.getElementById('detail-meta-divider');
+                if (divider) divider.style.display = "none";
+                window.scrollTo({ top: 0 });
+
+                // 通信を行って対象の記事の完全なデータ（本文含む）をピンポイントで取得！
+                let note = null;
+                try {
+                    const res = await fetch(`/api/notes?id=${id}`, {
+                        cache: 'no-store',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        note = Array.isArray(data) && data.length > 0 ? data[0] : null;
+                    }
+                } catch (e) {
+                    console.error('詳細データの取得に失敗:', e);
+                }
+
+                if (!note) {
+                    detailTitle.textContent = "記事が見つかりません";
+                    detailContent.innerHTML = `<p style="text-align:center; color:#ef4444; padding: 40px;">指定された記事は削除されたか、存在しません。</p>`;
+                    setTimeout(() => {
+                        noteBackBtn.click();
+                    }, 2000);
+                    return;
+                }
 
                 // タグ表示のクリーンアップと表示制御
-                const divider = document.getElementById('detail-meta-divider');
                 detailTag.innerHTML = "";
                 if (note.tags && note.tags.trim() !== "") {
                     if (divider) divider.style.display = "inline";
@@ -2276,11 +2345,9 @@
                     });
                     
                     shareXBtn.addEventListener('click', () => {
-                        // シェアするテキストの組み立て
                         const shareTitle = note.title;
-                        const shareUrl = window.location.origin + window.location.pathname + '#note-' + note.id;
+                        const shareUrl = window.location.origin + '/note?note=' + note.id;
                         
-                        // 画像またはYouTubeサムネイルURLの抽出
                         let mediaUrl = note.thumbnail;
                         if (!mediaUrl) {
                             const ytId = extractYouTubeVideoId(note.content);
@@ -2290,15 +2357,11 @@
                         }
                         
                         let tweetText = `📝 ${shareTitle} | ラピ態度のおうち\n`;
-                        
-                        // もし Base64 以外の直リンク画像URLがあればポスト内に添付
                         if (mediaUrl && !mediaUrl.startsWith('data:')) {
-                            tweetText += `${shareUrl}\n\n📸 カバー画像: ${mediaUrl}`;
-                        } else {
-                            tweetText += `${shareUrl}`;
+                            tweetText += `📸 カバー画像: ${mediaUrl}`;
                         }
                         
-                        const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+                        const xUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(shareUrl)}`;
                         window.open(xUrl, '_blank', 'noopener,noreferrer');
                     });
                 }
@@ -2314,17 +2377,12 @@
                         }
                     });
                 });
-
-                notesListView.style.display = 'none';
-                notesDetailView.classList.add('active');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
             // 記事一覧に戻る
             noteBackBtn.addEventListener('click', () => {
-                notesDetailView.classList.remove('active');
-                notesListView.style.display = 'block';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                history.pushState("", document.title, window.location.origin + window.location.pathname);
+                checkHashRoute();
             });
 
             // 管理者ログインのトグル
@@ -2894,20 +2952,71 @@
                 }
             }
 
+            // ハッシュおよびクエリルーティング処理
+            async function checkHashRoute() {
+                const hash = window.location.hash;
+                const urlParams = new URLSearchParams(window.location.search);
+                const queryNoteId = urlParams.get('note');
+
+                if (queryNoteId || hash.startsWith('#note-')) {
+                    // 詳細画面へのダイレクトアクセスのため、親セクション of 'page-notes' をアクティブにする
+                    switchPage('notes', false);
+                }
+
+                if (queryNoteId) {
+                    // クエリパラメータ ?note=xxx がある場合、ハッシュに置換してURLをすっきりさせる
+                    history.replaceState("", document.title, window.location.origin + window.location.pathname + '#note-' + queryNoteId);
+                    await showNoteDetail(queryNoteId);
+                } else if (hash.startsWith('#note-')) {
+                    const id = hash.replace('#note-', '');
+                    await showNoteDetail(id);
+                } else {
+                    notesDetailView.classList.remove('active');
+                    notesListView.style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+
+            // ハッシュ変更時とロード完了時にルーティングチェックを実行
+            window.addEventListener('hashchange', checkHashRoute);
+
             // 初期表示
-            renderNotesList();
+            (async () => {
+                let hasNote = false;
+                try {
+                    const parsedUrl = new URL(window.location.href);
+                    hasNote = window.location.hash.startsWith('#note-') || 
+                              parsedUrl.searchParams.has('note') || 
+                              window.location.href.includes('note-') || 
+                              window.location.href.includes('note=');
+                } catch(e) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    hasNote = window.location.hash.startsWith('#note-') || urlParams.has('note') || window.location.href.includes('note=');
+                }
+
+                if (hasNote) {
+                    // 記事へのダイレクトアクセス時は詳細表示を最優先！
+                    // 一覧のロードは裏で並行実行し、画面のカクつきをなくします
+                    await checkHashRoute();
+                    renderNotesList();
+                    
+                    // セーフティネット：ブラウザのハッシュパース遅延対策として、100ms後に再確認を実行
+                    setTimeout(checkHashRoute, 100);
+                } else {
+                    await renderNotesList();
+                    await checkHashRoute();
+                }
+            })();
 
             // --- 5. ひとこと機能ロジック ---
             const hitokotoBtn = document.getElementById('hitokoto-btn');
 
             if (hitokotoBtn) {
                 hitokotoBtn.addEventListener('click', () => {
-                    // 画面のテキストは変更せず、「好きな場合」を押した瞬間に自動でX（Twitter）の投稿画面を表示
                     const shareText = "私はメリンちゃんに本気です。";
-                    const shareUrl = "https://rapitide.github.io/my-portfolio/";
-                    const xIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+                    const shareUrl = window.location.origin + window.location.pathname;
+                    const xIntentUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
                     
-                    // ポップアップブロッカーに引っかからないよう、クリックイベント内で直接新規ウィンドウを開く
                     window.open(xIntentUrl, '_blank', 'noopener,noreferrer');
                 });
             }

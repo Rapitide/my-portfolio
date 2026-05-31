@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/note",
+      "destination": "/api/render"
+    }
+  ]
+}
