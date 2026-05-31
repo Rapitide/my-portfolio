@@ -1468,6 +1468,11 @@
                 padding: 6px 28px;
             }
         }
+
+        /* スピナーアニメーション */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 
@@ -1648,23 +1653,9 @@
                     </div>
 
                     <!-- 管理者ログインフォーム -->
-                    <div class="admin-login-panel" id="admin-login-panel" style="flex-direction: column; align-items: stretch; gap: 8px;">
-                        <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
-                            <input type="password" class="admin-input" id="admin-password-input" placeholder="パスワードを入力してください" style="flex: 1;">
-                            <button class="admin-btn" id="admin-login-btn">ログイン</button>
-                        </div>
-                        <!-- 自動デプロイ用 GitHub トークン設定 -->
-                        <div id="github-token-container" style="display: none; border-top: 1px solid #eee; padding-top: 12px; margin-top: 8px; width: 100%; text-align: left;">
-                            <label style="font-size: 0.78rem; color: #475569; font-weight: 700; display: block; margin-bottom: 6px;">🚀 自動デプロイ設定 (GitHub トークン)</label>
-                            <div style="display: flex; gap: 8px; width: 100%;">
-                                <input type="password" class="admin-input" id="github-token-input" placeholder="github_pat_..." style="flex: 1; font-size: 0.8rem;">
-                                <button class="admin-btn" id="save-token-btn" style="background: #10b981; font-weight: 700;">設定保存</button>
-                            </div>
-                            <span style="font-size: 0.72rem; color: #64748b; display: block; margin-top: 6px; line-height: 1.4;">
-                                トークンを設定しておくと、エディタで「公開する」を押した瞬間にブラウザからGitHubへ自動でコミット＆プッシュされ、1〜2分ですべてのユーザーに見えるようにデプロイされます！
-                                <a href="https://github.com/settings/tokens/new?scopes=public_repo" target="_blank" style="color: #2b6cb0; text-decoration: underline;">ここからトークンを作成 (public_repo権限が必要)</a>
-                            </span>
-                        </div>
+                    <div class="admin-login-panel" id="admin-login-panel">
+                        <input type="password" class="admin-input" id="admin-password-input" placeholder="パスワードを入力してください">
+                        <button class="admin-btn" id="admin-login-btn">ログイン</button>
                     </div>
 
                     <!-- 管理者用ツールバー (ログイン時のみ表示) -->
@@ -1672,10 +1663,6 @@
                         <button class="write-note-btn" id="write-note-btn">
                             <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
                             新規執筆
-                        </button>
-                        <button class="write-note-btn" id="export-notes-btn" style="display: none; background: #2b6cb0; border-color: #2b6cb0;" title="他端末でも見られるようにデプロイ用コードをコピーします">
-                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                            他端末へ反映用コピー
                         </button>
                     </div>
                 </div>
@@ -1941,17 +1928,12 @@
                 });
             }
 
-            // --- 4. Notes機能ロジック (Note風エディタ & localStorage) ---
+            // --- 4. Notes機能ロジック (Note風エディタ & 共有オンラインデータベース) ---
             const adminLoginTrigger = document.getElementById('admin-login-trigger');
             const adminLoginPanel = document.getElementById('admin-login-panel');
             const adminPasswordInput = document.getElementById('admin-password-input');
             const adminLoginBtn = document.getElementById('admin-login-btn');
             const writeNoteBtn = document.getElementById('write-note-btn');
-            
-            // 自動デプロイ設定関連UI
-            const githubTokenContainer = document.getElementById('github-token-container');
-            const githubTokenInput = document.getElementById('github-token-input');
-            const saveTokenBtn = document.getElementById('save-token-btn');
             
             // エディタUI
             const editorModal = document.getElementById('editor-modal');
@@ -1995,52 +1977,49 @@
             let activeTags = [];
             let currentThumbnail = "";
 
-            // サンプルデータ
-            const defaultNotes = [];
+            // 共有オンラインデータベースのURL (設定不要で全ユーザーに即時自動反映)
+            const DB_URL = "https://kvdb.io/tdn_notes_e4a3b8c9/notes";
+            let cachedNotes = []; // メモリ上に記事データをキャッシュしておく変数
 
-            // 記事データのロードと他端末との自動マージ同期
-            function getNotes() {
-                // 一般ユーザー（非ログイン）は、キャッシュ不整合を防ぐため常に最新の defaultNotes を直接参照する
-                if (!isAdmin) {
-                    return defaultNotes;
-                }
-
-                const stored = localStorage.getItem('rapitide_notes');
-                if (!stored) {
-                    localStorage.setItem('rapitide_notes', JSON.stringify(defaultNotes));
-                    return defaultNotes;
-                }
-                
-                const localNotes = JSON.parse(stored);
-                let isUpdated = false;
-                const mergedNotes = [...localNotes];
-                
-                // コミットされた最新の defaultNotes があれば、ローカルのキャッシュとマージして同期する
-                defaultNotes.forEach(defNote => {
-                    const exists = mergedNotes.some(n => n.id === defNote.id);
-                    if (!exists) {
-                        mergedNotes.push(defNote);
-                        isUpdated = true;
-                    } else {
-                        const idx = mergedNotes.findIndex(n => n.id === defNote.id);
-                        if (idx !== -1 && JSON.stringify(mergedNotes[idx]) !== JSON.stringify(defNote)) {
-                            mergedNotes[idx] = defNote;
-                            isUpdated = true;
-                        }
+            // 共有オンラインデータベースから記事データを取得する（非同期）
+            async function fetchNotes() {
+                try {
+                    const res = await fetch(DB_URL);
+                    if (res.ok) {
+                        const data = await res.json();
+                        cachedNotes = data || [];
+                    } else if (res.status === 404) {
+                        // まだデータが作成されていない場合は、空配列で初期化
+                        cachedNotes = [];
+                        await saveNotesOnline(cachedNotes);
                     }
-                });
-
-                if (isUpdated) {
-                    localStorage.setItem('rapitide_notes', JSON.stringify(mergedNotes));
-                    return mergedNotes;
+                } catch (err) {
+                    console.error('記事データの取得に失敗しました。ローカルキャッシュを使用します:', err);
+                    // オフライン時のフォールバックとして localStorage を使用
+                    const stored = localStorage.getItem('rapitide_notes_backup');
+                    cachedNotes = stored ? JSON.parse(stored) : [];
                 }
-                
-                return localNotes;
+                return cachedNotes;
             }
 
-            // 記事データの保存
-            function saveNotes(notes) {
-                localStorage.setItem('rapitide_notes', JSON.stringify(notes));
+            // オンラインデータベースへ記事データを保存する（非同期）
+            async function saveNotesOnline(notes) {
+                localStorage.setItem('rapitide_notes_backup', JSON.stringify(notes)); // オフライン用バックアップ
+                try {
+                    const res = await fetch(DB_URL, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(notes)
+                    });
+                    if (!res.ok) {
+                        throw new Error(`保存に失敗しました (Status: ${res.status})`);
+                    }
+                } catch (err) {
+                    console.error('データベースへの保存に失敗しました:', err);
+                    alert('⚠️ データベースへの保存（同期）に失敗しました。オフライン状態か、サービスの一時的なエラーの可能性があります。');
+                }
             }
 
             // HTMLから純粋なプレビューテキストを作成する
@@ -2106,9 +2085,16 @@
                 return null;
             }
 
-            // 記事一覧のレンダリング
-            function renderNotesList() {
-                const notes = getNotes();
+            // 記事一覧のレンダリング (非同期ロード対応)
+            async function renderNotesList() {
+                notesList.innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: #64748b;">
+                        <div style="display: inline-block; width: 28px; height: 28px; border: 3px solid #cbd5e1; border-top-color: #2b6cb0; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px;"></div>
+                        <div style="font-size: 0.9rem; font-weight: 500;">記事データを同期中...</div>
+                    </div>
+                `;
+
+                const notes = await fetchNotes();
                 notesList.innerHTML = '';
 
                 if (notes.length === 0) {
@@ -2207,9 +2193,9 @@
                 });
             }
 
-            // 記事詳細の表示
-            function showNoteDetail(id) {
-                const notes = getNotes();
+            // 記事詳細の表示 (非同期対応)
+            async function showNoteDetail(id) {
+                const notes = await fetchNotes(); // 常に最新のデータを共有DBからフェッチ
                 const note = notes.find(n => n.id === id);
                 if (!note) return;
 
@@ -2347,9 +2333,6 @@
                     `;
                     adminLoginTrigger.style.color = '#888';
                     writeNoteBtn.classList.remove('visible');
-                    const exportNotesBtn = document.getElementById('export-notes-btn');
-                    if (exportNotesBtn) exportNotesBtn.style.display = 'none';
-                    if (githubTokenContainer) githubTokenContainer.style.display = 'none';
                     adminLoginPanel.classList.remove('active');
                     renderNotesList();
                 } else {
@@ -2383,39 +2366,11 @@
                     adminLoginTrigger.style.color = '#e53e3e';
                     writeNoteBtn.classList.add('visible');
                     
-                    const exportNotesBtn = document.getElementById('export-notes-btn');
-                    if (exportNotesBtn) exportNotesBtn.style.display = 'inline-flex';
-                    
-                    // トークン設定UIの表示とトークンロード
-                    if (githubTokenContainer) {
-                        githubTokenContainer.style.display = 'block';
-                        const savedToken = localStorage.getItem('rapitide_github_token');
-                        if (savedToken && githubTokenInput) {
-                            githubTokenInput.value = savedToken;
-                        }
-                    }
-                    
                     renderNotesList();
                     alert('管理者としてログインしました。執筆と記事の管理が可能です。');
                 } else {
                     alert('パスワードが正しくありません。');
                 }
-            }
-
-            // トークンの設定保存イベント
-            if (saveTokenBtn) {
-                saveTokenBtn.addEventListener('click', () => {
-                    if (githubTokenInput) {
-                        const token = githubTokenInput.value.trim();
-                        if (token) {
-                            localStorage.setItem('rapitide_github_token', token);
-                            alert('【🚀 GitHub トークン保存完了】\n\n自動デプロイ用のトークンを設定しました。今後は「公開する」を押すだけで自動デプロイが実行されます！');
-                        } else {
-                            localStorage.removeItem('rapitide_github_token');
-                            alert('トークンを削除しました。自動デプロイは無効になり、手動同期になります。');
-                        }
-                    }
-                });
             }
 
             // --- ツールバーボタンのアクティブ状態判定・反映 ---
@@ -2645,43 +2600,44 @@
                         embedFileInput.click();
                         break;
                     case 'note':
-                        const notes = getNotes();
-                        if (notes.length === 0) {
-                            alert('埋め込み可能な過去のNoteがありません。');
-                            return;
-                        }
-                        const listStr = notes.map(n => `ID: ${n.id} | ${n.title}`).join('\n');
-                        const inputId = prompt(`埋め込みたい記事のIDを半角で入力してください:\n\n${listStr}`);
-                        if (inputId) {
-                            const found = notes.find(n => n.id === inputId.trim());
-                            if (found) {
-                                // 埋め込みカード用サムネイルの決定
-                                let cardThumb = found.thumbnail;
-                                if (!cardThumb) {
-                                    const ytId = extractYouTubeVideoId(found.content);
-                                    if (ytId) {
-                                        cardThumb = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
-                                    }
-                                }
-                                cardThumb = cardThumb || 'image_0c53e7.png'; // 最終フォールバック
-                                
-                                insertHTMLAtCursor(`
-                                    <a href="#" class="embedded-blog-card" contenteditable="false" onclick="showNoteDetail('${found.id}'); return false;">
-                                        <img class="blog-card-thumb" src="${cardThumb}">
-                                        <div class="blog-card-content">
-                                            <div class="blog-card-title">${found.title}</div>
-                                            <div class="blog-card-meta">
-                                                <span class="note-card-tag">${(found.tags || '思考').split(',')[0]}</span>
-                                                <span>${found.date}</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <p><br></p>
-                                `);
-                            } else {
-                                alert('指定されたIDの記事が見つかりませんでした。');
+                        fetchNotes().then(notes => {
+                            if (notes.length === 0) {
+                                alert('埋め込み可能な過去のNoteがありません。');
+                                return;
                             }
-                        }
+                            const listStr = notes.map(n => `ID: ${n.id} | ${n.title}`).join('\n');
+                            const inputId = prompt(`埋め込みたい記事のIDを半角で入力してください:\n\n${listStr}`);
+                            if (inputId) {
+                                const found = notes.find(n => n.id === inputId.trim());
+                                if (found) {
+                                    // 埋め込みカード用サムネイルの決定
+                                    let cardThumb = found.thumbnail;
+                                    if (!cardThumb) {
+                                        const ytId = extractYouTubeVideoId(found.content);
+                                        if (ytId) {
+                                            cardThumb = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+                                        }
+                                    }
+                                    cardThumb = cardThumb || 'image_0c53e7.png'; // 最終フォールバック
+                                    
+                                    insertHTMLAtCursor(`
+                                        <a href="#" class="embedded-blog-card" contenteditable="false" onclick="showNoteDetail('${found.id}'); return false;">
+                                            <img class="blog-card-thumb" src="${cardThumb}">
+                                            <div class="blog-card-content">
+                                                <div class="blog-card-title">${found.title}</div>
+                                                <div class="blog-card-meta">
+                                                    <span class="note-card-tag">${(found.tags || '思考').split(',')[0]}</span>
+                                                    <span>${found.date}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <p><br></p>
+                                    `);
+                                } else {
+                                    alert('指定されたIDの記事が見つかりませんでした。');
+                                }
+                            }
+                        });
                         break;
                     case 'code':
                         // 直接コードブロックを挿入（コード部分と言語タグを直接タイピング可能に）
@@ -2790,13 +2746,13 @@
             });
 
             // エディタを開く
-            function openEditor(id = null) {
+            async function openEditor(id = null) {
                 currentEditingNoteId = id;
                 activeTags = [];
                 currentThumbnail = "";
 
                 if (id) {
-                    const notes = getNotes();
+                    const notes = await fetchNotes();
                     const note = notes.find(n => n.id === id);
                     if (!note) return;
 
@@ -2850,7 +2806,7 @@
                 }
             });
 
-            // 保存（公開）処理
+            // 保存（公開）処理 (非同期DB同期対応)
             editorSaveBtn.addEventListener('click', async () => {
                 const title = editorTitleInput.value.trim();
                 const content = editorContentInput.innerHTML.trim();
@@ -2862,175 +2818,76 @@
                     return;
                 }
 
-                let notes = getNotes();
-                const now = new Date();
-                const formattedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+                // 保存ボタンをローディング中状態にする
+                const originalText = editorSaveBtn.textContent;
+                editorSaveBtn.textContent = '保存中...';
+                editorSaveBtn.disabled = true;
 
-                const tagStr = activeTags.join(',');
-                const savedEditingId = currentEditingNoteId; // IDを一時保存！
+                try {
+                    let notes = await fetchNotes();
+                    const now = new Date();
+                    const formattedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
 
-                if (currentEditingNoteId) {
-                    notes = notes.map(note => {
-                        if (note.id === currentEditingNoteId) {
-                            return {
-                                ...note,
-                                title: title,
-                                thumbnail: currentThumbnail,
-                                tags: tagStr,
-                                content: content,
-                                date: formattedDate
-                            };
-                        }
-                        return note;
-                    });
-                } else {
-                    const newNote = {
-                        id: String(Date.now()),
-                        title: title,
-                        thumbnail: currentThumbnail,
-                        tags: tagStr,
-                        content: content,
-                        date: formattedDate
-                    };
-                    notes.push(newNote);
-                }
+                    const tagStr = activeTags.join(',');
+                    const savedEditingId = currentEditingNoteId; // IDを一時保存！
 
-                saveNotes(notes);
-                closeEditor();
-                renderNotesList();
-                
-                // 退避したIDを使って詳細画面を瞬時にリフレッシュ！
-                if (notesDetailView.classList.contains('active') && savedEditingId) {
-                    showNoteDetail(savedEditingId);
-                }
+                    if (currentEditingNoteId) {
+                        notes = notes.map(note => {
+                            if (note.id === currentEditingNoteId) {
+                                return {
+                                    ...note,
+                                    title: title,
+                                    thumbnail: currentThumbnail,
+                                    tags: tagStr,
+                                    content: content,
+                                    date: formattedDate
+                                };
+                            }
+                            return note;
+                        });
+                    } else {
+                        const newNote = {
+                            id: String(Date.now()),
+                            title: title,
+                            thumbnail: currentThumbnail,
+                            tags: tagStr,
+                            content: content,
+                            date: formattedDate
+                        };
+                        notes.push(newNote);
+                    }
 
-                // GitHubへの自動コミット・デプロイを非同期で実行（トークンが設定されている場合のみ）
-                const token = localStorage.getItem('rapitide_github_token');
-                if (token) {
-                    await autoCommitToGitHub(notes);
+                    // 共有オンラインデータベースへ同期保存
+                    await saveNotesOnline(notes);
+                    
+                    closeEditor();
+                    await renderNotesList();
+                    
+                    // 退避したIDを使って詳細画面を瞬時にリフレッシュ！
+                    if (notesDetailView.classList.contains('active') && savedEditingId) {
+                        await showNoteDetail(savedEditingId);
+                    }
+                } catch (err) {
+                    console.error(err);
+                } finally {
+                    editorSaveBtn.textContent = originalText;
+                    editorSaveBtn.disabled = false;
                 }
             });
 
-            // 削除処理
+            // 削除処理 (非同期DB同期対応)
             async function deleteNote(id) {
                 if (confirm('この記事を削除してもよろしいですか？')) {
-                    let notes = getNotes();
+                    let notes = await fetchNotes();
                     notes = notes.filter(note => note.id !== id);
-                    saveNotes(notes);
-                    renderNotesList();
+                    
+                    await saveNotesOnline(notes);
+                    await renderNotesList();
                     
                     if (notesDetailView.classList.contains('active')) {
                         noteBackBtn.click();
                     }
-
-                    // GitHubへの自動コミット・デプロイを非同期で実行（トークンが設定されている場合のみ）
-                    const token = localStorage.getItem('rapitide_github_token');
-                    if (token) {
-                        await autoCommitToGitHub(notes);
-                    }
                 }
-            }
-
-            // GitHubへの自動コミット・デプロイ処理
-            async function autoCommitToGitHub(notes) {
-                const token = localStorage.getItem('rapitide_github_token');
-                if (!token) return;
-
-                const owner = "rapitide"; // GitHub ユーザー名
-                const repo = "my-portfolio"; // リポジトリ名
-                const path = "index.html"; // ファイルパス
-
-                // 保存（公開する）ボタンのUIをローディング状態にする
-                const saveBtn = document.getElementById('editor-save-btn');
-                const originalText = saveBtn.textContent;
-                saveBtn.textContent = '自動デプロイ中...';
-                saveBtn.disabled = true;
-
-                try {
-                    // 1. 最新の index.html 情報を GitHub API から取得
-                    const getUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-                    const res = await fetch(getUrl, {
-                        headers: {
-                            "Authorization": `token ${token}`,
-                            "Accept": "application/vnd.github.v3+json"
-                        }
-                    });
-
-                    if (!res.ok) {
-                        throw new Error(`リポジトリ情報の取得に失敗しました (Status: ${res.status})。\nトークンの権限またはGitHubの設定を確認してください。`);
-                    }
-
-                    const data = await res.json();
-                    const sha = data.sha;
-                    
-                    // Base64デコード（日本語の文字化けを防ぐ堅牢なUTF-8デコード）
-                    const contentBase64 = data.content.replace(/\s/g, '');
-                    const originalHtml = decodeURIComponent(escape(atob(contentBase64)));
-
-                    // 2. index.html 内の defaultNotes の中身を最新の notes で書き換える
-                    const regex = /const\s+defaultNotes\s*=\s*\[[\s\S]*?\];/;
-                    if (!regex.test(originalHtml)) {
-                        throw new Error('index.html内の「const defaultNotes = [...];」の定義パターンが見つかりませんでした。');
-                    }
-
-                    const updatedHtml = originalHtml.replace(regex, `const defaultNotes = ${JSON.stringify(notes, null, 4)};`);
-
-                    // 3. 更新した内容を GitHub API へ PUT して自動コミット＆プッシュ！
-                    const putContentBase64 = btoa(unescape(encodeURIComponent(updatedHtml)));
-                    const commitRes = await fetch(getUrl, {
-                        method: "PUT",
-                        headers: {
-                            "Authorization": `token ${token}`,
-                            "Accept": "application/vnd.github.v3+json",
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            message: `📝 Note記事の自動更新 [System Commit]`,
-                            content: putContentBase64,
-                            sha: sha
-                        })
-                    });
-
-                    if (!commitRes.ok) {
-                        const errData = await commitRes.json();
-                        throw new Error(`GitHubへのコミットに失敗しました: ${errData.message}`);
-                    }
-
-                    alert('【🎉 自動デプロイ成功！】\n\nGitHubリポジトリへの自動コミットが完了しました。\n約1〜2分後にGitHub Pagesのビルドが完了し、世界中のすべてのユーザーに最新記事が自動反映されます！');
-
-                } catch (err) {
-                    console.error('Auto deploy failed: ', err);
-                    alert(`【⚠️ 自動デプロイ失敗】\n\n${err.message}\n\n※ローカルでの保存は成功しているため、必要に応じて「他端末へ反映用コピー」ボタンから手動で貼り付けてデプロイすることも可能です。`);
-                } finally {
-                    saveBtn.textContent = originalText;
-                    saveBtn.disabled = false;
-                }
-            }
-
-            // --- 他端末へ反映用コピー機能 ---
-            const exportNotesBtn = document.getElementById('export-notes-btn');
-            if (exportNotesBtn) {
-                exportNotesBtn.addEventListener('click', () => {
-                    const notes = getNotes();
-                    const codeStr = `const defaultNotes = ${JSON.stringify(notes, null, 4)};`;
-                    
-                    navigator.clipboard.writeText(codeStr).then(() => {
-                        alert('【🎉 デプロイ用コードのコピー完了！】\n\nコピーされたコードを、index.html の「const defaultNotes = [...]」が定義されている部分（1978行目付近）に丸ごと貼り付け（ペースト）して、GitHubにプッシュ（デプロイ）してください。\n\nこれで世界中のすべての端末で、あなたが書いたすべての最新記事が自動同期されて読めるようになります！');
-                    }).catch(err => {
-                        console.error('Clipboard copy failed: ', err);
-                        const tempTextArea = document.createElement('textarea');
-                        tempTextArea.value = codeStr;
-                        document.body.appendChild(tempTextArea);
-                        tempTextArea.select();
-                        try {
-                            document.execCommand('copy');
-                            alert('【🎉 デプロイ用コードのコピー完了！（代替方式）】\n\nコピーされたコードを、index.html の「const defaultNotes = [...]」定義部分（1978行目付近）に丸ごと貼り付けて、GitHubにプッシュ（デプロイ）してください。');
-                        } catch (copyErr) {
-                            alert('コピーに失敗しました。お手数ですが開発者コンソールからコピーしてください。');
-                        }
-                        document.body.removeChild(tempTextArea);
-                    });
-                });
             }
 
             // 初期表示
