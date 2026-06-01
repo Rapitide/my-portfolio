@@ -3,6 +3,10 @@
     {
       "source": "/note",
       "destination": "/api/render"
+    },
+    {
+      "source": "/api/image/:note.jpg",
+      "destination": "/api/image?note=:note"
     }
   ]
 }

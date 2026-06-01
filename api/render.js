@@ -81,11 +81,11 @@ export default async function handler(req, res) {
           }
         }
 
-        // Base64画像の場合、自ドメインの動的画像配信エンドポイントを指す絶対URLに変換する！
+        // Base64画像の場合、自ドメインの動的画像配信エンドポイントを指す拡張子付き絶対URLに変換する！
         if (isBase64) {
           const host = req.headers.host || 'rptied-home.vercel.app';
           const protocol = host.includes('localhost') ? 'http' : 'https';
-          imageUrl = `${protocol}://${host}/api/image?note=${noteId}`;
+          imageUrl = `${protocol}://${host}/api/image/${noteId}.jpg`;
           console.log(`[api/render] Image is Base64. Rewriting OGP image URL to dynamic provider: ${imageUrl}`);
         }
         
