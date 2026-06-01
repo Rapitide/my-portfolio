@@ -77,20 +77,54 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Body must be an array of notes' });
       }
 
+      // 1. Supabaseから現在保存されている「完全な記事データ（本文を含むすべて）」を取得する
+      let existingFullMap = new Map();
+      try {
+        const existingFullRes = await fetch(`${API_BASE}?select=*`, {
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+        });
+        if (existingFullRes.ok) {
+          const existingFull = await existingFullRes.json();
+          if (Array.isArray(existingFull)) {
+            existingFull.forEach(n => {
+              existingFullMap.set(String(n.id), n);
+            });
+          }
+        }
+      } catch (e) {
+        console.error('既存フルデータの取得に失敗しました（補完なしで進行）:', e);
+      }
+
+      // 2. フロントから送られてきた各記事について、本文が欠落している（軽量データ）場合は
+      // Supabaseの既存データから本文（content）を補完してマージする
+      const mergedNotes = notes.map(n => {
+        const idStr = String(n.id);
+        const existing = existingFullMap.get(idStr);
+        
+        // フロントから content が送られてきている場合はそれを使用
+        // 送られてきていない（または空だが、既存データにはある）場合は既存データから補完
+        let finalContent = n.content;
+        if ((finalContent === undefined || finalContent === null || finalContent === '') && existing) {
+          finalContent = existing.content || '';
+        }
+
+        return {
+          id: n.id,
+          title: n.title,
+          thumbnail: n.thumbnail || (existing ? existing.thumbnail : ''),
+          tags: n.tags || (existing ? existing.tags : ''),
+          content: finalContent || '',
+          date: n.date
+        };
+      });
+
       // Supabase の upsert を使って一括同期
       // upsert: 存在すれば更新、なければ挿入
-      if (notes.length > 0) {
+      if (mergedNotes.length > 0) {
         const upsertRes = await fetch(`${API_BASE}?on_conflict=id`, {
           method: 'POST',
           headers: { ...headers, 'Prefer': 'resolution=merge-duplicates,return=representation' },
-          body: JSON.stringify(notes.map(n => ({
-            id: n.id,
-            title: n.title,
-            thumbnail: n.thumbnail || '',
-            tags: n.tags || '',
-            content: n.content || '',
-            date: n.date
-          })))
+          body: JSON.stringify(mergedNotes)
         });
         if (!upsertRes.ok) {
           const text = await upsertRes.text();

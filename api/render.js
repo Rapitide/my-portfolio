@@ -11,7 +11,7 @@ function extractFirstImageUrl(htmlContent) {
   // imgタグのsrcを検索
   const imgRegex = /<img[^>]+src=["']([^"']+)["']/i;
   const match = imgRegex.exec(htmlContent);
-  if (match && match[1] && !match[1].startsWith('data:')) {
+  if (match && match[1]) {
     return match[1];
   }
   // YouTubeのサムネイルを検索
@@ -66,18 +66,27 @@ export default async function handler(req, res) {
         // プレビュー文の作成 (HTMLタグを除去して先頭120文字)
         const preview = note.content ? note.content.replace(/<[^>]*>/g, '').substring(0, 120).trim() + '...' : 'ラピ態度のおうちの記事';
         
-        // OGP画像URLはクローラー向けに外部URLのみを許可 (Base64データURIはX側でエラーになりプレビューカード全体が壊れるため除外)
+        // OGP画像URLの取得とBase64検出
         let imageUrl = note.thumbnail;
-        if (imageUrl && imageUrl.startsWith('data:')) {
-          console.log('[api/render] Thumbnail is Base64. Removing it from OGP rendering.');
-          imageUrl = null;
+        let isBase64 = false;
+
+        if (imageUrl && imageUrl.startsWith('data:image/')) {
+          isBase64 = true;
         }
+
         if (!imageUrl) {
           imageUrl = extractFirstImageUrl(note.content);
+          if (imageUrl && imageUrl.startsWith('data:image/')) {
+            isBase64 = true;
+          }
         }
-        if (imageUrl && imageUrl.startsWith('data:')) {
-          console.log('[api/render] Extracted image is Base64. Removing it from OGP rendering.');
-          imageUrl = null;
+
+        // Base64画像の場合、自ドメインの動的画像配信エンドポイントを指す絶対URLに変換する！
+        if (isBase64) {
+          const host = req.headers.host || 'rptied-home.vercel.app';
+          const protocol = host.includes('localhost') ? 'http' : 'https';
+          imageUrl = `${protocol}://${host}/api/image?note=${noteId}`;
+          console.log(`[api/render] Image is Base64. Rewriting OGP image URL to dynamic provider: ${imageUrl}`);
         }
         
         console.log(`[api/render] Found note "${title}". Image URL for OGP: ${imageUrl}`);
