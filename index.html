@@ -2814,9 +2814,25 @@
                 currentThumbnail = "";
 
                 if (id) {
-                    const notes = await fetchNotes();
-                    const note = notes.find(n => n.id === id);
-                    if (!note) return;
+                    // ピンポイントで本文を含む完全なデータをフェッチする！
+                    let note = null;
+                    try {
+                        const res = await fetch(`${DB_URL}?id=${id}`, {
+                            cache: 'no-store',
+                            headers: { 'Accept': 'application/json' }
+                        });
+                        if (res.ok) {
+                            const data = await res.json();
+                            note = Array.isArray(data) && data.length > 0 ? data[0] : null;
+                        }
+                    } catch (e) {
+                        console.error('編集データの取得に失敗:', e);
+                    }
+
+                    if (!note) {
+                        alert('記事データの取得に失敗しました。');
+                        return;
+                    }
 
                     editorModalTitle.textContent = 'Noteを編集する';
                     editorTitleInput.value = note.title;
