@@ -1475,6 +1475,164 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* ===== Chrome Dino セクション ===== */
+        .dino-section {
+            grid-column: 1 / -1; /* 2カラムをまたぐ */
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            text-align: left;
+            animation: fadeIn 0.4s ease-out forwards;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            user-select: none;
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .dino-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+            transition: border-color 0.5s ease;
+        }
+
+        .dino-title {
+            font-size: 1.5rem;
+            color: #4a5568;
+            font-weight: 500;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: color 0.5s ease;
+        }
+
+        .dino-scores {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #555;
+            transition: color 0.5s ease;
+        }
+
+        .dino-score-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-right: 4px;
+        }
+
+        .dino-game-container {
+            position: relative;
+            width: 100%;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .dino-canvas {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .dino-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            z-index: 10;
+            backdrop-filter: blur(2px);
+            transition: background-color 0.5s ease;
+        }
+
+        .dino-overlay-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #475569;
+            letter-spacing: 2px;
+            text-align: center;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: color 0.5s ease;
+        }
+
+        .dino-restart-btn {
+            background: #0f1419;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+
+        .dino-restart-btn:hover {
+            background: #272c30;
+            transform: scale(1.05);
+        }
+
+        /* 夜モード（ダークスタイル）の追加定義 */
+        .dino-section.night-mode {
+            background-color: #1a202c;
+            border-color: #2d3748;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .dino-section.night-mode .dino-header {
+            border-bottom-color: #2d3748;
+        }
+
+        .dino-section.night-mode .dino-title {
+            color: #e2e8f0;
+        }
+
+        .dino-section.night-mode .dino-scores {
+            color: #cbd5e1;
+        }
+
+        .dino-section.night-mode .dino-game-container {
+            background-color: #111827;
+            border-color: #374151;
+        }
+
+        .dino-section.night-mode .dino-overlay {
+            background-color: rgba(17, 24, 39, 0.85);
+        }
+
+        .dino-section.night-mode .dino-overlay-text {
+            color: #e2e8f0;
+        }
+
+        .dino-section.night-mode .dino-restart-btn {
+            background: #f8fafc;
+            color: #1a202c;
+        }
+        
+        .dino-section.night-mode .dino-restart-btn:hover {
+            background: #e2e8f0;
+        }
     </style>
 </head>
 
@@ -1492,7 +1650,7 @@
 
         <div class="sns-icons">
             <!-- GitHub -->
-            <a href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <a href="https://github.com/Rapitide" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
                 <svg viewBox="0 0 24 24">
                     <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
                 </svg>
@@ -1528,6 +1686,27 @@
         <!-- ================= HOME PAGE ================= -->
         <div id="page-home" class="page active">
             <div class="main">
+
+                <!-- Chrome Dino セクション (2カラムぶち抜き) -->
+                <div class="dino-section">
+                    <div class="dino-header">
+                        <div class="dino-title">Chrome Dino 🦖</div>
+                        <div class="dino-scores">
+                            <span class="dino-score-label">SCORE:</span><span id="dino-current-score">00000</span>
+                            <span class="dino-score-label" style="margin-left: 15px;">HI:</span><span id="dino-high-score">00000</span>
+                        </div>
+                    </div>
+                    <div class="dino-game-container">
+                        <canvas id="dino-canvas" class="dino-canvas" width="756" height="180"></canvas>
+                        <div id="dino-start-overlay" class="dino-overlay">
+                            <div class="dino-overlay-text">SPACEキー または タップで開始</div>
+                        </div>
+                        <div id="dino-gameover-overlay" class="dino-overlay" style="display: none;">
+                            <div class="dino-overlay-text">GAME OVER</div>
+                            <button id="dino-restart-btn" class="dino-restart-btn">もう一度プレイ</button>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- ひとことセクション (2カラムぶち抜き) -->
                 <div class="hitokoto-section">
@@ -3034,6 +3213,522 @@
                     const xIntentUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
                     
                     window.open(xIntentUrl, '_blank', 'noopener,noreferrer');
+                });
+            }
+
+            // --- 6. Chrome Dino ゲームロジック ---
+            const dinoCanvas = document.getElementById('dino-canvas');
+            if (dinoCanvas) {
+                const dinoCtx = dinoCanvas.getContext('2d');
+                const startOverlay = document.getElementById('dino-start-overlay');
+                const gameoverOverlay = document.getElementById('dino-gameover-overlay');
+                const restartBtn = document.getElementById('dino-restart-btn');
+                const currentScoreEl = document.getElementById('dino-current-score');
+                const highScoreEl = document.getElementById('dino-high-score');
+                const dinoSec = document.querySelector('.dino-section');
+
+                // ゲームの論理解像度
+                const LOGICAL_WIDTH = 756;
+                const LOGICAL_HEIGHT = 180;
+                const GROUND_Y = 152;
+
+                // ゲーム状態
+                let gameState = 'START'; // 'START', 'PLAYING', 'GAMEOVER'
+                let score = 0;
+                let highScore = parseInt(localStorage.getItem('dino_high_score') || '0', 10);
+                let gameSpeed = 6;
+                const INITIAL_SPEED = 6;
+                const MAX_SPEED = 14;
+                let frameCount = 0;
+                let nextObstacleFrame = 0;
+                let currentThemeColor = '#535353';
+
+                // キー入力状態
+                const keys = {};
+
+                // ハイスコア初期表示
+                highScoreEl.textContent = String(highScore).padStart(5, '0');
+
+                // ピクセルアート定義
+                const DINO_RUN1 = [
+                    "            ████████",
+                    "            █████████",
+                    "            ███░░████",
+                    "            █████████",
+                    "            ██████",
+                    "            █████████",
+                    " █         ██████",
+                    " ██       █████████",
+                    " █████████████████",
+                    " ████████████████",
+                    "  ███████████████",
+                    "   █████████████",
+                    "    ███████████",
+                    "     █████████",
+                    "      ██████",
+                    "      ██  ██",
+                    "      ██  █",
+                    "      ██"
+                ];
+
+                const DINO_RUN2 = [
+                    "            ████████",
+                    "            █████████",
+                    "            ███░░████",
+                    "            █████████",
+                    "            ██████",
+                    "            █████████",
+                    " █         ██████",
+                    " ██       █████████",
+                    " █████████████████",
+                    " ████████████████",
+                    "  ███████████████",
+                    "   █████████████",
+                    "    ███████████",
+                    "     █████████",
+                    "      ██████",
+                    "      ██  ██",
+                    "       ██  █",
+                    "           █"
+                ];
+
+                const DINO_DUCK1 = [
+                    "                █████████",
+                    "                ██████████",
+                    "                ███░░█████",
+                    "                ██████████",
+                    " ██            ██████████",
+                    " ███████████████████████",
+                    "  █████████████████████",
+                    "   ███████████████████",
+                    "     ███████████████",
+                    "      ██████  ██████",
+                    "      █   █   █   █"
+                ];
+
+                const DINO_DUCK2 = [
+                    "                █████████",
+                    "                ██████████",
+                    "                ███░░█████",
+                    "                ██████████",
+                    " ██            ██████████",
+                    " ███████████████████████",
+                    "  █████████████████████",
+                    "   ███████████████████",
+                    "     ███████████████",
+                    "      ██████  ██████",
+                    "       █  █    █  █"
+                ];
+
+                const CACTUS_SMALL = [
+                    "   ██   ",
+                    "   ██   ",
+                    " ██████ ",
+                    "████████",
+                    "██ ██ ██",
+                    "██ ██ ██",
+                    "██ ██ ██",
+                    "██ ██ ██",
+                    " ██████ ",
+                    "   ██   ",
+                    "   ██   ",
+                    "   ██   ",
+                    "   ██   ",
+                    "   ██   "
+                ];
+
+                const CACTUS_LARGE = [
+                    "     ██     ",
+                    "     ██     ",
+                    "   ██████   ",
+                    " ██████████ ",
+                    "████████████",
+                    "██ ██ ██ ██",
+                    "██ ██ ██ ██",
+                    "██ ██ ██ ██",
+                    "██ ██ ██ ██",
+                    " ██████████ ",
+                    "     ██     ",
+                    "     ██     ",
+                    "     ██     ",
+                    "     ██     ",
+                    "     ██     ",
+                    "     ██     ",
+                    "     ██     "
+                ];
+
+                const BIRD1 = [
+                    "      █████      ",
+                    "    █████████    ",
+                    "   ███░░██████   ",
+                    "  █████████████  ",
+                    " ███████████████ ",
+                    "█████████████████",
+                    " ███████████████ ",
+                    "   ███████████   "
+                ];
+
+                const BIRD2 = [
+                    "      █████      ",
+                    "    █████████    ",
+                    "   ███░░██████   ",
+                    "  █████████████  ",
+                    " ███████████████ ",
+                    "  █████████████  ",
+                    "    █████████    ",
+                    "      █████      "
+                ];
+
+                const CLOUD = [
+                    "      ██████      ",
+                    "    ██████████    ",
+                    "  ██████████████  ",
+                    "██████████████████"
+                ];
+
+                // 描画ヘルパー
+                function drawSprite(sprite, x, y, pixelSize = 2) {
+                    dinoCtx.fillStyle = currentThemeColor;
+                    for (let r = 0; r < sprite.length; r++) {
+                        for (let c = 0; c < sprite[r].length; c++) {
+                            if (sprite[r][c] === '█') {
+                                dinoCtx.fillRect(x + c * pixelSize, y + r * pixelSize, pixelSize, pixelSize);
+                            }
+                        }
+                    }
+                }
+
+                // プレイヤーオブジェクト
+                const dino = {
+                    x: 50,
+                    y: GROUND_Y - 36,
+                    width: 36,
+                    height: 36,
+                    duckWidth: 46,
+                    duckHeight: 22,
+                    vy: 0,
+                    gravity: 0.6,
+                    jumpStrength: -10,
+                    onGround: true,
+                    isDucking: false,
+                    animFrame: 0,
+                    
+                    update() {
+                        // しゃがみ判定
+                        this.isDucking = keys['ArrowDown'] && this.onGround;
+
+                        // ジャンプ処理
+                        if ((keys['Space'] || keys['ArrowUp'] || keys['Tap']) && this.onGround) {
+                            this.vy = this.jumpStrength;
+                            this.onGround = false;
+                        }
+
+                        // 重力物理
+                        this.vy += this.gravity;
+                        this.y += this.vy;
+
+                        // 地面衝突
+                        const currentHeight = this.isDucking ? this.duckHeight : this.height;
+                        if (this.y + currentHeight >= GROUND_Y) {
+                            this.y = GROUND_Y - currentHeight;
+                            this.vy = 0;
+                            this.onGround = true;
+                        }
+
+                        // アニメーションフレーム更新
+                        if (frameCount % 6 === 0) {
+                            this.animFrame = this.animFrame === 0 ? 1 : 0;
+                        }
+                    },
+
+                    draw() {
+                        const currentHeight = this.isDucking ? this.duckHeight : this.height;
+                        if (this.isDucking) {
+                            const sprite = this.animFrame === 0 ? DINO_DUCK1 : DINO_DUCK2;
+                            drawSprite(sprite, this.x, this.y, 2);
+                        } else {
+                            const sprite = this.onGround ? (this.animFrame === 0 ? DINO_RUN1 : DINO_RUN2) : DINO_RUN1;
+                            drawSprite(sprite, this.x, this.y, 2);
+                        }
+                    },
+
+                    getBounds() {
+                        const w = this.isDucking ? this.duckWidth : this.width;
+                        const h = this.isDucking ? this.duckHeight : this.height;
+                        // 判定を少し甘くする（マージンをとる）
+                        return {
+                            x: this.x + 4,
+                            y: this.y + 4,
+                            width: w - 8,
+                            height: h - 6
+                        };
+                    }
+                };
+
+                // 障害物・装飾配列
+                let obstacles = [];
+                let clouds = [];
+                let groundOffset = 0;
+
+                // 障害物クラス
+                class Obstacle {
+                    constructor(type) {
+                        this.type = type; // 'CACTUS_S', 'CACTUS_L', 'BIRD'
+                        this.x = LOGICAL_WIDTH;
+                        this.animFrame = 0;
+
+                        if (type === 'CACTUS_S') {
+                            this.width = 16;
+                            this.height = 28;
+                            this.y = GROUND_Y - this.height;
+                            this.sprite = CACTUS_SMALL;
+                        } else if (type === 'CACTUS_L') {
+                            this.width = 24;
+                            this.height = 34;
+                            this.y = GROUND_Y - this.height;
+                            this.sprite = CACTUS_LARGE;
+                        } else if (type === 'BIRD') {
+                            this.width = 34;
+                            this.height = 16;
+                            // 鳥の高さは3種類 (高め、中くらい、低め)
+                            const heights = [GROUND_Y - 50, GROUND_Y - 32, GROUND_Y - 14];
+                            this.y = heights[Math.floor(Math.random() * heights.length)];
+                        }
+                    }
+
+                    update() {
+                        this.x -= gameSpeed;
+                        if (frameCount % 12 === 0) {
+                            this.animFrame = this.animFrame === 0 ? 1 : 0;
+                        }
+                    }
+
+                    draw() {
+                        if (this.type === 'BIRD') {
+                            const sprite = this.animFrame === 0 ? BIRD1 : BIRD2;
+                            drawSprite(sprite, this.x, this.y, 2);
+                        } else {
+                            drawSprite(this.sprite, this.x, this.y, 2);
+                        }
+                    }
+
+                    getBounds() {
+                        // 判定マージン
+                        return {
+                            x: this.x + 3,
+                            y: this.y + 3,
+                            width: this.width - 6,
+                            height: this.height - 6
+                        };
+                    }
+                }
+
+                // 雲クラス
+                class CloudDecoration {
+                    constructor() {
+                        this.x = LOGICAL_WIDTH;
+                        this.y = 20 + Math.random() * 40;
+                        this.speed = 0.5 + Math.random() * 0.5;
+                        this.width = 36;
+                        this.height = 8;
+                    }
+                    update() {
+                        this.x -= this.speed;
+                    }
+                    draw() {
+                        drawSprite(CLOUD, this.x, this.y, 2);
+                    }
+                }
+
+                // 衝突判定
+                function checkCollision(rect1, rect2) {
+                    return rect1.x < rect2.x + rect2.width &&
+                           rect1.x + rect1.width > rect2.x &&
+                           rect1.y < rect2.y + rect2.height &&
+                           rect1.y + rect1.height > rect2.y;
+                }
+
+                // ゲームのリセット・開始
+                function initGame() {
+                    score = 0;
+                    gameSpeed = INITIAL_SPEED;
+                    frameCount = 0;
+                    obstacles = [];
+                    clouds = [];
+                    dino.y = GROUND_Y - dino.height;
+                    dino.vy = 0;
+                    dino.onGround = true;
+                    nextObstacleFrame = 50;
+                    currentThemeColor = '#535353';
+                    dinoSec.classList.remove('night-mode');
+                    currentScoreEl.textContent = "00000";
+                }
+
+                // 描画と更新ループ
+                function gameLoop() {
+                    if (gameState !== 'PLAYING') return;
+
+                    frameCount++;
+
+                    // スピードアップ
+                    if (frameCount % 500 === 0 && gameSpeed < MAX_SPEED) {
+                        gameSpeed += 0.5;
+                    }
+
+                    // スコア加算
+                    if (frameCount % 5 === 0) {
+                        score++;
+                        currentScoreEl.textContent = String(score).padStart(5, '0');
+
+                        // テーマカラー更新 (700点ごとに昼夜反転)
+                        if (Math.floor(score / 700) % 2 === 1) {
+                            dinoSec.classList.add('night-mode');
+                            currentThemeColor = '#f7f7f7';
+                        } else {
+                            dinoSec.classList.remove('night-mode');
+                            currentThemeColor = '#535353';
+                        }
+                    }
+
+                    // 雲の生成・更新
+                    if (Math.random() < 0.005 && clouds.length < 5) {
+                        clouds.push(new CloudDecoration());
+                    }
+                    clouds.forEach(c => c.update());
+                    clouds = clouds.filter(c => c.x + c.width > 0);
+
+                    // 障害物の生成・更新
+                    if (frameCount >= nextObstacleFrame) {
+                        const r = Math.random();
+                        let type = 'CACTUS_S';
+                        if (score > 300 && r < 0.25) {
+                            type = 'BIRD';
+                        } else if (r > 0.6) {
+                            type = 'CACTUS_L';
+                        }
+                        obstacles.push(new Obstacle(type));
+                        
+                        // 次の障害物までの間隔
+                        nextObstacleFrame = frameCount + 60 + Math.random() * 80 - (gameSpeed * 2);
+                    }
+
+                    obstacles.forEach(ob => ob.update());
+                    
+                    // 衝突チェック
+                    const playerBounds = dino.getBounds();
+                    for (let ob of obstacles) {
+                        if (checkCollision(playerBounds, ob.getBounds())) {
+                            gameState = 'GAMEOVER';
+                            if (score > highScore) {
+                                highScore = score;
+                                localStorage.setItem('dino_high_score', highScore);
+                                highScoreEl.textContent = String(highScore).padStart(5, '0');
+                            }
+                            gameoverOverlay.style.display = 'flex';
+                            break;
+                        }
+                    }
+
+                    obstacles = obstacles.filter(ob => ob.x + ob.width > 0);
+
+                    // 地面のスクロール
+                    groundOffset = (groundOffset - gameSpeed) % 20;
+
+                    dino.update();
+
+                    // --- 画面クリア & 描画 ---
+                    dinoCtx.clearRect(0, 0, LOGICAL_WIDTH, LOGICAL_HEIGHT);
+
+                    // 雲
+                    clouds.forEach(c => c.draw());
+
+                    // 地面
+                    dinoCtx.strokeStyle = currentThemeColor;
+                    dinoCtx.lineWidth = 2;
+                    dinoCtx.beginPath();
+                    dinoCtx.moveTo(0, GROUND_Y);
+                    dinoCtx.lineTo(LOGICAL_WIDTH, GROUND_Y);
+                    dinoCtx.stroke();
+
+                    // 地面のディテール（小石など）
+                    dinoCtx.fillStyle = currentThemeColor;
+                    for (let i = 0; i < LOGICAL_WIDTH + 40; i += 40) {
+                        const px = i + groundOffset;
+                        dinoCtx.fillRect(px, GROUND_Y + 4, 3, 2);
+                        dinoCtx.fillRect(px + 15, GROUND_Y + 10, 2, 2);
+                    }
+
+                    // 障害物
+                    obstacles.forEach(ob => ob.draw());
+
+                    // プレイヤー
+                    dino.draw();
+
+                    requestAnimationFrame(gameLoop);
+                }
+
+                // キー・タップイベントハンドラ
+                function handleJumpStart() {
+                    if (gameState === 'START') {
+                        gameState = 'PLAYING';
+                        startOverlay.style.display = 'none';
+                        initGame();
+                        gameLoop();
+                    } else if (gameState === 'GAMEOVER') {
+                        // ゲームオーバー時はボタンクリックでリスタート
+                    } else {
+                        keys['Tap'] = true;
+                    }
+                }
+
+                // ジャンプ終了
+                function handleJumpEnd() {
+                    keys['Tap'] = false;
+                }
+
+                // キーイベント登録
+                window.addEventListener('keydown', (e) => {
+                    if (e.code === 'Space' || e.code === 'ArrowUp') {
+                        e.preventDefault();
+                        keys['Space'] = true;
+                        handleJumpStart();
+                    }
+                    if (e.code === 'ArrowDown') {
+                        e.preventDefault();
+                        keys['ArrowDown'] = true;
+                    }
+                });
+
+                window.addEventListener('keyup', (e) => {
+                    if (e.code === 'Space' || e.code === 'ArrowUp') {
+                        keys['Space'] = false;
+                        handleJumpEnd();
+                    }
+                    if (e.code === 'ArrowDown') {
+                        keys['ArrowDown'] = false;
+                    }
+                });
+
+                // マウス・タッチ操作登録（モバイル対応）
+                dinoCanvas.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    handleJumpStart();
+                });
+                dinoCanvas.addEventListener('mouseup', handleJumpEnd);
+
+                dinoCanvas.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    handleJumpStart();
+                });
+                dinoCanvas.addEventListener('touchend', handleJumpEnd);
+
+                // リスタートボタン
+                restartBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    gameState = 'PLAYING';
+                    gameoverOverlay.style.display = 'none';
+                    initGame();
+                    gameLoop();
                 });
             }
         });
