@@ -1536,6 +1536,7 @@
             justify-content: center;
             align-items: center;
             transition: background-color 0.5s ease, border-color 0.5s ease;
+            touch-action: none; /* モバイルでのスクロールやダブルタップズームを無効化 */
         }
 
         .dino-canvas {
@@ -3226,6 +3227,7 @@
                 const currentScoreEl = document.getElementById('dino-current-score');
                 const highScoreEl = document.getElementById('dino-high-score');
                 const dinoSec = document.querySelector('.dino-section');
+                const dinoGameContainer = document.querySelector('.dino-game-container');
 
                 // ゲームの論理解像度
                 const LOGICAL_WIDTH = 756;
@@ -3675,7 +3677,11 @@
                         initGame();
                         gameLoop();
                     } else if (gameState === 'GAMEOVER') {
-                        // ゲームオーバー時はボタンクリックでリスタート
+                        // ゲームオーバー時は画面タップでもリスタートできるようにする
+                        gameState = 'PLAYING';
+                        gameoverOverlay.style.display = 'none';
+                        initGame();
+                        gameLoop();
                     } else {
                         keys['Tap'] = true;
                     }
@@ -3709,18 +3715,18 @@
                     }
                 });
 
-                // マウス・タッチ操作登録（モバイル対応）
-                dinoCanvas.addEventListener('mousedown', (e) => {
+                // マウス・タッチ操作登録（モバイル対応：バインド先をゲームコンテナ全体に変更）
+                dinoGameContainer.addEventListener('mousedown', (e) => {
                     e.preventDefault();
                     handleJumpStart();
                 });
-                dinoCanvas.addEventListener('mouseup', handleJumpEnd);
+                dinoGameContainer.addEventListener('mouseup', handleJumpEnd);
 
-                dinoCanvas.addEventListener('touchstart', (e) => {
+                dinoGameContainer.addEventListener('touchstart', (e) => {
                     e.preventDefault();
                     handleJumpStart();
-                });
-                dinoCanvas.addEventListener('touchend', handleJumpEnd);
+                }, { passive: false });
+                dinoGameContainer.addEventListener('touchend', handleJumpEnd);
 
                 // リスタートボタン
                 restartBtn.addEventListener('click', (e) => {
