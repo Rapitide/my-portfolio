@@ -64,7 +64,7 @@ export default async function handler(req, res) {
         const note = data[0];
         const title = note.title;
         // プレビュー文の作成 (HTMLタグを除去して先頭120文字)
-        const preview = note.content ? note.content.replace(/<[^>]*>/g, '').substring(0, 120).trim() + '...' : 'ラピ態度のおうちの記事';
+        const preview = note.content ? note.content.replace(/<[^>]*>/g, '').substring(0, 120).trim() + '...' : 'ラピ態度実験室の記事';
         
         // OGP画像URLの取得とBase64検出
         let imageUrl = note.thumbnail;
@@ -83,7 +83,7 @@ export default async function handler(req, res) {
 
         // Base64画像の場合、自ドメインの動的画像配信エンドポイントを指す拡張子付き絶対URLに変換する！
         if (isBase64) {
-          const host = req.headers.host || 'rptied-home.vercel.app';
+          const host = req.headers.host || 'rptied-lab.vercel.app';
           const protocol = host.includes('localhost') ? 'http' : 'https';
           imageUrl = `${protocol}://${host}/api/image/${noteId}.jpg`;
           console.log(`[api/render] Image is Base64. Rewriting OGP image URL to dynamic provider: ${imageUrl}`);
@@ -92,13 +92,13 @@ export default async function handler(req, res) {
         console.log(`[api/render] Found note "${title}". Image URL for OGP: ${imageUrl}`);
 
         // メタタグの書き換え
-        html = html.replace(/<meta property="og:title"[^>]*>/i, `<meta property="og:title" content="${title} | ラピ態度のおうち">`);
+        html = html.replace(/<meta property="og:title"[^>]*>/i, `<meta property="og:title" content="${title} | ラピ態度実験室">`);
         html = html.replace(/<meta property="og:description"[^>]*>/i, `<meta property="og:description" content="${preview}">`);
-        html = html.replace(/<meta name="twitter:title"[^>]*>/i, `<meta name="twitter:title" content="${title} | ラピ態度のおうち">`);
+        html = html.replace(/<meta name="twitter:title"[^>]*>/i, `<meta name="twitter:title" content="${title} | ラピ態度実験室">`);
         html = html.replace(/<meta name="twitter:description"[^>]*>/i, `<meta name="twitter:description" content="${preview}">`);
         
         // OGPの遷移URLを現在のVercelの動的パスに書き換え (古いGitHubへのリダイレクトやカード全体のリンク破壊を防ぐ)
-        const pageUrl = `https://rptied-home.vercel.app/note?note=${noteId}`;
+        const pageUrl = `https://rptied-lab.vercel.app/note?note=${noteId}`;
         html = html.replace(/<meta property="og:url"[^>]*>/i, `<meta property="og:url" content="${pageUrl}">`);
         
         // カードタイプを大画像に変更
