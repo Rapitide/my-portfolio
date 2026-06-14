@@ -623,61 +623,98 @@
             background: #1a365d;
         }
 
-        /* ===== Noteカードリスト ===== */
+        /* ===== Noteカードリスト (3列グリッド写真集レイアウト) ===== */
         .notes-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px; /* 写真の間の余白。びっしり並べるため小さめの4px */
             margin-top: 24px;
         }
 
         .note-card {
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 24px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
             position: relative;
+            background: #f1f5f9;
+            aspect-ratio: 1 / 1; /* 正方形にする */
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 6px; /* 角を少し丸めておしゃれに */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             box-sizing: border-box;
         }
 
         .note-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
-            border-color: #cbd5e1;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 2;
         }
 
-        .note-card-meta {
+        .note-grid-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .note-card:hover .note-grid-img {
+            transform: scale(1.08); /* ホバー時に画像を少し拡大するお洒落エフェクト */
+        }
+
+        /* 画像がない場合のテキストカード表示 */
+        .note-grid-text-card {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-bottom: 8px;
+            justify-content: center;
+            padding: 12px;
+            box-sizing: border-box;
+            text-align: center;
         }
 
-        .note-card-tag {
-            background: #f1f5f9;
-            color: #475569;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 500;
-        }
-
-        .note-card-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #0f172a;
-            line-height: 1.4;
-            margin-bottom: 8px;
-        }
-
-        .note-card-preview {
+        .note-grid-text-title {
             font-size: 0.95rem;
-            color: #475569;
-            line-height: 1.6;
+            font-weight: 700;
+            color: #334155;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 4; /* 最大4行で省略 */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ホバー時にフェードインする情報オーバーレイ */
+        .note-grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 20, 25, 0.7); /* 暗めの半透明 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            text-align: center;
+            color: #fff;
+        }
+
+        .note-card:hover .note-grid-overlay {
+            opacity: 1; /* ホバーでフェードイン */
+        }
+
+        .note-grid-overlay-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            line-height: 1.3;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
@@ -685,36 +722,46 @@
             text-overflow: ellipsis;
         }
 
-        .note-card-actions {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: none;
-            gap: 8px;
-            z-index: 10;
+        .note-grid-overlay-date {
+            font-size: 0.75rem;
+            color: #cbd5e1;
         }
 
-        .note-card:hover .note-card-actions.visible {
+        /* 管理者用編集・削除アクション */
+        .note-grid-actions {
+            position: absolute;
+            top: 6px;
+            right: 6px;
             display: flex;
+            gap: 4px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .note-card:hover .note-grid-actions.visible {
+            opacity: 1;
         }
 
         .note-action-btn {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.9);
             border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            width: 28px;
-            height: 28px;
+            border-radius: 50%; /* 円形にする */
+            width: 26px;
+            height: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s;
             color: #64748b;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .note-action-btn:hover {
-            background: #f1f5f9;
+            background: #fff;
             color: #0f172a;
+            transform: scale(1.1);
         }
 
         .note-action-btn.delete:hover {
@@ -1235,7 +1282,7 @@
 
         /* ===== Notes ページ ===== */
         .notes-container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 40px 24px 120px;
         }
@@ -1691,7 +1738,7 @@
                 <!-- Chrome Dino セクション (2カラムぶち抜き) -->
                 <div class="dino-section">
                     <div class="dino-header">
-                        <div class="dino-title">Chrome Dino 🦖</div>
+                        <div class="dino-title">🦖</div>
                         <div class="dino-scores">
                             <span class="dino-score-label">SCORE:</span><span id="dino-current-score">00000</span>
                             <span class="dino-score-label" style="margin-left: 15px;">HI:</span><span id="dino-high-score">00000</span>
@@ -2302,6 +2349,27 @@
                 return null;
             }
 
+            // コンテンツHTMLから最初の画像URL（またはYouTubeサムネイル）を抽出するユーティリティ関数
+            function extractFirstImageUrlFromHtml(htmlContent) {
+                if (!htmlContent) return '';
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = htmlContent;
+                
+                // 1. imgタグのチェック
+                const img = tempDiv.querySelector('img');
+                if (img && img.src) {
+                    return img.src;
+                }
+                
+                // 2. YouTube埋め込み(iframe)のチェック
+                const ytId = extractYouTubeVideoId(htmlContent);
+                if (ytId) {
+                    return `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+                }
+                
+                return '';
+            }
+
             // 記事一覧のレンダリング (非同期ロード対応)
             async function renderNotesList() {
                 notesList.innerHTML = `
@@ -2331,14 +2399,7 @@
                     const card = document.createElement('div');
                     card.className = 'note-card';
 
-                    const stripedText = getStripedPreview(note.content, 120);
-                    
-                    // タグが登録されている場合のみパース。空の場合は空配列にする
-                    const tagList = note.tags ? note.tags.split(',').filter(t => t.trim() !== "") : [];
-                    const primaryTag = tagList.length > 0 ? tagList[0] : '';
-                    const tagHtml = primaryTag ? `<span class="note-card-tag">${primaryTag}</span>` : '';
-
-                    // サムネイルの決定（手動サムネイルが無い場合はYouTubeサムネを自動取得）
+                    // サムネイルの決定
                     let thumbnailSrc = note.thumbnail;
                     if (!thumbnailSrc) {
                         const ytId = extractYouTubeVideoId(note.content);
@@ -2349,40 +2410,36 @@
 
                     if (thumbnailSrc) {
                         card.innerHTML = `
-                            <div class="note-card-with-thumb">
-                                <div class="note-card-info-side">
-                                    <div class="note-card-meta">
-                                        ${tagHtml}
-                                        <span>${note.date}</span>
-                                    </div>
-                                    <h2 class="note-card-title">${note.title}</h2>
-                                    <p class="note-card-preview">${stripedText}</p>
-                                </div>
-                                <img src="${thumbnailSrc}" class="note-card-thumb-side" alt="アイキャッチ画像">
+                            <img src="${thumbnailSrc}" class="note-grid-img" alt="カバー画像">
+                            <div class="note-grid-overlay">
+                                <div class="note-grid-overlay-title">${note.title}</div>
+                                <div class="note-grid-overlay-date">${note.date}</div>
                             </div>
-                            <div class="note-card-actions ${isAdmin ? 'visible' : ''}">
+                            <div class="note-grid-actions ${isAdmin ? 'visible' : ''}">
                                 <button class="note-action-btn edit" data-id="${note.id}" title="編集">
-                                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                                 </button>
                                 <button class="note-action-btn delete" data-id="${note.id}" title="削除">
-                                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                                 </button>
                             </div>
                         `;
                     } else {
+                        // 写真が無い場合のグラデーションテキスト表示
                         card.innerHTML = `
-                            <div class="note-card-meta">
-                                ${tagHtml}
-                                <span>${note.date}</span>
+                            <div class="note-grid-text-card">
+                                <div class="note-grid-text-title">${note.title}</div>
                             </div>
-                            <h2 class="note-card-title">${note.title}</h2>
-                            <p class="note-card-preview">${stripedText}</p>
-                            <div class="note-card-actions ${isAdmin ? 'visible' : ''}">
+                            <div class="note-grid-overlay">
+                                <div class="note-grid-overlay-title">${note.title}</div>
+                                <div class="note-grid-overlay-date">${note.date}</div>
+                            </div>
+                            <div class="note-grid-actions ${isAdmin ? 'visible' : ''}">
                                 <button class="note-action-btn edit" data-id="${note.id}" title="編集">
-                                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                                 </button>
                                 <button class="note-action-btn delete" data-id="${note.id}" title="削除">
-                                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                                 </button>
                             </div>
                         `;
@@ -3089,13 +3146,19 @@
                     const tagStr = activeTags.join(',');
                     const savedEditingId = currentEditingNoteId; // IDを一時保存！
 
+                    // サムネイルが指定されていない場合、本文HTMLから最初の画像を自動抽出
+                    let finalThumbnail = currentThumbnail.trim();
+                    if (!finalThumbnail) {
+                        finalThumbnail = extractFirstImageUrlFromHtml(content);
+                    }
+
                     if (currentEditingNoteId) {
                         notes = notes.map(note => {
                             if (note.id === currentEditingNoteId) {
                                 return {
                                     ...note,
                                     title: title,
-                                    thumbnail: currentThumbnail,
+                                    thumbnail: finalThumbnail,
                                     tags: tagStr,
                                     content: content
                                     // date は上書きせず既存の公開日を維持
@@ -3107,7 +3170,7 @@
                         const newNote = {
                             id: String(Date.now()),
                             title: title,
-                            thumbnail: currentThumbnail,
+                            thumbnail: finalThumbnail,
                             tags: tagStr,
                             content: content,
                             date: formattedDate
