@@ -1681,6 +1681,28 @@
         .dino-section.night-mode .dino-restart-btn:hover {
             background: #e2e8f0;
         }
+
+        /* ===== Favs セクション ===== */
+        .favs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+            width: 100%;
+        }
+
+        .favs-grid .twitter-tweet {
+            margin: 0 auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        @media (max-width: 768px) {
+            .favs-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
     </style>
 </head>
 
@@ -2011,6 +2033,27 @@
             </div>
         </div>
 
+        <!-- ================= FAVS PAGE ================= -->
+        <div id="page-favs" class="page">
+            <div class="notes-container">
+                <div class="notes-header">
+                    <h1 class="notes-title">Favs</h1>
+                    <div class="notes-subtitle">
+                        <span>コスメティック田中さんの「Xいいね」のまとめ。自動同期中。</span>
+                    </div>
+                </div>
+                <div id="favs-loading" class="notes-placeholder-card">
+                    <p class="placeholder-main-text">データを取得中...⏳</p>
+                </div>
+                <div id="favs-list" class="favs-grid" style="display: none;">
+                    <!-- スクレイピングされたツイートがここに入ります -->
+                </div>
+                <div id="favs-error" class="notes-placeholder-card" style="display: none;">
+                    <p class="placeholder-main-text" style="color: #e53e3e;">データの取得に失敗しました。時間をおいて再度お試しください。💔</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- ================= FLOATING NAVIGATION MENU ================= -->
@@ -2059,6 +2102,14 @@
                 </svg>
                 Products
             </button>
+
+            <!-- Favs -->
+            <button class="menu-item" id="btn-nav-favs">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                Favs
+            </button>
             
             <!-- Follow me -->
             <a href="https://x.com/Rptied" target="_blank" rel="noopener noreferrer" class="menu-item">
@@ -2092,7 +2143,7 @@
             const headerLeft = document.getElementById('header-left');
             
             // ページIDのリスト
-            const pages = ['whats-this', 'home', 'notes', 'products'];
+            const pages = ['whats-this', 'home', 'notes', 'products', 'favs'];
 
             // --- 1. メニュー開閉制御 ---
             menuTrigger.addEventListener('click', (e) => {
@@ -2120,6 +2171,9 @@
 
             // --- 2. ページ切り替え（ルーティング） ---
             function switchPage(targetPageId, smooth = true) {
+                if (targetPageId === 'favs') {
+                    fetchFavs();
+                }
                 if (smooth) {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 } else {
@@ -2153,6 +2207,73 @@
                     btnEl.addEventListener('click', () => switchPage(pageId));
                 }
             });
+
+            // --- Favs (Xいいね) 取得・描画ロジック ---
+            let favsFetched = false;
+
+            async function fetchFavs() {
+                if (favsFetched) return;
+
+                const loadingEl = document.getElementById('favs-loading');
+                const listEl = document.getElementById('favs-list');
+                const errorEl = document.getElementById('favs-error');
+
+                loadingEl.style.display = 'block';
+                listEl.style.display = 'none';
+                errorEl.style.display = 'none';
+
+                try {
+                    console.log('[Favs] Fetching from API...');
+                    const res = await fetch('/api/favs');
+                    if (!res.ok) throw new Error(`API returned ${res.status}`);
+                    
+                    const data = await res.json();
+                    if (!data.success || !Array.isArray(data.tweets)) {
+                        throw new Error(data.error || 'Invalid data format');
+                    }
+
+                    if (data.tweets.length === 0) {
+                        listEl.innerHTML = '<div class="notes-placeholder-card"><p class="placeholder-main-text">いいねされたツイートはまだありませんでした。📭</p></div>';
+                    } else {
+                        listEl.innerHTML = data.tweets.map(tweetHtml => {
+                            return `<div class="fav-item-wrapper">${tweetHtml}</div>`;
+                        }).join('');
+                    }
+
+                    loadingEl.style.display = 'none';
+                    listEl.style.display = 'grid';
+                    favsFetched = true;
+
+                    ensureTwitterWidgetsLoaded();
+
+                } catch (err) {
+                    console.error('[Favs] Error fetching favs:', err);
+                    loadingEl.style.display = 'none';
+                    errorEl.style.display = 'block';
+                }
+            }
+
+            function ensureTwitterWidgetsLoaded() {
+                if (window.twttr && window.twttr.widgets) {
+                    window.twttr.widgets.load(document.getElementById('favs-list'));
+                    return;
+                }
+
+                if (!document.getElementById('twitter-wjs')) {
+                    const script = document.createElement('script');
+                    script.id = 'twitter-wjs';
+                    script.src = 'https://platform.twitter.com/widgets.js';
+                    script.charset = 'utf-8';
+                    script.async = true;
+                    
+                    script.onload = () => {
+                        if (window.twttr && window.twttr.widgets) {
+                            window.twttr.widgets.load(document.getElementById('favs-list'));
+                        }
+                    };
+                    document.body.appendChild(script);
+                }
+            }
 
             // --- 3. ヘッダーのロゴ部分でHomeに戻る ---
             if (headerLeft) {
