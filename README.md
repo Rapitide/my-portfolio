@@ -1,2 +1,2 @@
-https://rapitide.github.io/my-portfolio/
+https://rptied-lab.vercel.app/
 覗いてみてね
