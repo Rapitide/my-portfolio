@@ -1,2 +1,2 @@
-https://rptied-lab.vercel.app/
+https://rptied.vercel.app/
 覗いてみてね
