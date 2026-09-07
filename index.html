@@ -4,22 +4,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <style>
-        html,
-        body {
-            width: 100%;
-            min-height: 100%;
-            margin: 0;
-            background: #fff;
-        }
-
-        body {
-            min-height: 100vh;
-        }
-    </style>
+    <meta name="theme-color" content="#f7f7f3">
+    <meta name="description" content="ラピ態度 / Rptied の個人サイト。言葉とプロダクトのあいだで、考えながらつくっています。">
+    <title>RPTIED — Personal site</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
-<body></body>
+<body id="top">
+    <header class="site-header shell">
+        <a class="brand" href="#top" aria-label="RPTIED home">
+            <span class="brand-mark" aria-hidden="true">R</span>
+            <span>RPTIED</span>
+        </a>
+
+        <nav class="site-nav" aria-label="Primary navigation">
+            <a href="#about">About</a>
+            <a href="#focus">Focus</a>
+            <a href="#elsewhere">Elsewhere</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero shell" aria-labelledby="hero-title">
+            <div class="hero-copy">
+                <p class="eyebrow">PERSONAL SITE <span>/</span> 2026</p>
+                <h1 id="hero-title">考えながら、<br><em>つくる。</em></h1>
+                <p class="hero-lede">ラピ態度 / Rptied — 言葉とプロダクトのあいだで、興味の向くままに手を動かしています。</p>
+            </div>
+
+            <div class="hero-aside">
+                <div class="status-dot" aria-hidden="true"></div>
+                <p>Based in<br><strong>Saitama, Japan</strong></p>
+                <p class="hero-note">Always exploring<br>something new.</p>
+            </div>
+        </section>
+
+        <section class="section shell" id="about" aria-labelledby="about-title">
+            <div class="section-index">01</div>
+            <div class="section-body intro-grid">
+                <h2 id="about-title">About</h2>
+                <div class="section-copy">
+                    <p class="lead-copy">ラピ態度です。大学生として過ごしながら、言葉、心理学、ソフトウェア、音楽や映像を行ったり来たりしています。</p>
+                    <p>ひとつの肩書きに決めるより、気になったものを観察して、小さくつくって、また考える。その繰り返しが今はいちばんしっくりきます。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section shell" id="focus" aria-labelledby="focus-title">
+            <div class="section-index">02</div>
+            <div class="section-body">
+                <h2 id="focus-title">Focus</h2>
+                <div class="focus-list">
+                    <article class="focus-item">
+                        <span class="focus-number">01</span>
+                        <div>
+                            <h3>Words</h3>
+                            <p>言葉のニュアンスや、人が何を感じてどう伝えるのかを考える。</p>
+                        </div>
+                    </article>
+                    <article class="focus-item">
+                        <span class="focus-number">02</span>
+                        <div>
+                            <h3>Small products</h3>
+                            <p>アプリやゲームなど、思いつきを触れる形に変えてみる。</p>
+                        </div>
+                    </article>
+                    <article class="focus-item">
+                        <span class="focus-number">03</span>
+                        <div>
+                            <h3>Many mediums</h3>
+                            <p>音楽、映像、3DCG。表現の方法をひとつに決めない。</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section shell" id="elsewhere" aria-labelledby="elsewhere-title">
+            <div class="section-index">03</div>
+            <div class="section-body elsewhere-grid">
+                <h2 id="elsewhere-title">Elsewhere</h2>
+                <div class="elsewhere-links">
+                    <a class="text-link" href="https://github.com/Rapitide" target="_blank" rel="noopener noreferrer">
+                        <span>GitHub</span><span aria-hidden="true">↗</span>
+                    </a>
+                    <a class="text-link" href="https://x.com/Rptied" target="_blank" rel="noopener noreferrer">
+                        <span>X / @Rptied</span><span aria-hidden="true">↗</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer shell">
+        <span>© 2026 Rptied</span>
+        <a href="#top">Back to top ↑</a>
+    </footer>
+</body>
 
 </html>
