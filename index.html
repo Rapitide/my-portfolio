@@ -18,52 +18,180 @@
             max-width: 42em;
             margin: 15px auto;
         }
+
+        #blogcontent {
+            max-width: 42em;
+            margin: 48px auto 15px;
+        }
+
+        #working-notes h2 {
+            margin-bottom: 0.25em;
+        }
+
+        .note-list {
+            padding-left: 1.4em;
+        }
+
+        .note-list li {
+            margin-bottom: 0.85em;
+        }
+
+        .note-date,
+        .post-date {
+            color: #666;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+        .note-excerpt {
+            display: block;
+        }
+
+        .post-detail {
+            margin-top: 48px;
+        }
+
+        .post-detail h2 {
+            margin-bottom: 0.2em;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
     </style>
     <title>Rptied</title>
 </head>
 
 <body>
     <div id="maincontent" style="margin-top:70px">
-        <h2>Rptied</h2>
+        <div id="profile">
+            <h2>Rptied</h2>
 
-        <p>I build small things, write code, and keep learning in public.</p>
+            <p>I build small things, write code, and keep learning in public.</p>
 
-        Some things about me:
-        <ul>
-            <li>I grew up in Saitama, Japan.</li>
-            <li>I went through local elementary and junior high schools, then attended Kawagoe Higashi High School and Saitama University.</li>
-            <li>I am currently a student at Saitama University.</li>
-            <li>I am interested in language, psychology, software, games, music, video, and 3D graphics.</li>
-            <li>These days I am developing <a href="https://melink.info">MeLink</a>, an app for students at Saitama University.</li>
-            <li>I post as <a href="https://x.com/Rptied">@Rptied</a>. I also use <a href="https://x.com/Lptied">@Lptied</a> — not L but R.</li>
-        </ul>
+            Some things about me:
+            <ul>
+                <li>I grew up in Saitama, Japan.</li>
+                <li>I went through local elementary and junior high schools, then attended Kawagoe Higashi High School and Saitama University.</li>
+                <li>I am currently a student at Saitama University.</li>
+                <li>I am interested in language, psychology, software, games, music, video, and 3D graphics.</li>
+                <li>These days I am developing <a href="https://melink.info">MeLink</a>, an app for students at Saitama University.</li>
+                <li>I post as <a href="https://x.com/Rptied">@Rptied</a>. I also use <a href="https://x.com/Lptied">@Lptied</a> — not L but R.</li>
+            </ul>
 
-        Some things I believe:
-        <ul>
-            <li>
-                Start by doing the thing
-                <ul>
-                    <li>An idea becomes clearer after it exists.</li>
-                    <li>Make a small version before trying to make the perfect version.</li>
-                    <li>Let experiments do some of the thinking.</li>
-                </ul>
-            </li>
-            <li>
-                Keep curiosity wide
-                <ul>
-                    <li>Language, code, and creative tools can belong in the same conversation.</li>
-                    <li>A change of medium can reveal a different way to think.</li>
-                </ul>
-            </li>
-            <li>
-                Make things that feel honest
-                <ul>
-                    <li>Useful work should still feel like it came from a person.</li>
-                    <li>The things I make do not need to be perfect to be worth making.</li>
-                </ul>
-            </li>
-        </ul>
+            Some things I believe:
+            <ul>
+                <li>
+                    Start by doing the thing
+                    <ul>
+                        <li>An idea becomes clearer after it exists.</li>
+                        <li>Make a small version before trying to make the perfect version.</li>
+                        <li>Let experiments do some of the thinking.</li>
+                    </ul>
+                </li>
+                <li>
+                    Keep curiosity wide
+                    <ul>
+                        <li>Language, code, and creative tools can belong in the same conversation.</li>
+                        <li>A change of medium can reveal a different way to think.</li>
+                    </ul>
+                </li>
+                <li>
+                    Make things that feel honest
+                    <ul>
+                        <li>Useful work should still feel like it came from a person.</li>
+                        <li>The things I make do not need to be perfect to be worth making.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <p><a href="#working-notes">Read my working notes →</a></p>
+        </div>
     </div>
+
+    <section id="blogcontent">
+        <div id="working-notes">
+            <h2>Working Notes</h2>
+            <p>Short notes on making things, learning in public, and staying curious.</p>
+
+            <ol class="note-list">
+                <li>
+                    <a href="#small-things">Why I Keep Making Small Things</a>
+                    <span class="note-date">— Sep 7, 2026</span>
+                    <span class="note-excerpt">A small version is often the fastest way to discover what the idea really is.</span>
+                </li>
+                <li>
+                    <a href="#melink">Building MeLink at Saitama University</a>
+                    <span class="note-date">— Sep 7, 2026</span>
+                    <span class="note-excerpt">Notes from building an app for students and learning from the people who use it.</span>
+                </li>
+                <li>
+                    <a href="#wide-curiosity">A Wide Curiosity</a>
+                    <span class="note-date">— Sep 7, 2026</span>
+                    <span class="note-excerpt">Why language, psychology, software, games, music, video, and 3D graphics share the same notebook.</span>
+                </li>
+            </ol>
+        </div>
+
+        <article id="small-things" class="post-detail" hidden>
+            <a class="back-link" href="#working-notes">← Back to Working Notes</a>
+            <h2>Why I Keep Making Small Things</h2>
+            <p class="post-date">Sep 7, 2026</p>
+            <p>A finished small thing teaches me more than a perfect plan that never becomes real. Once an idea exists, even in a rough form, it can answer questions that thinking alone cannot.</p>
+            <p>I try to make the smallest version that can be used, observed, and changed. The result is rarely the final shape, but it gives the next decision something solid to stand on.</p>
+            <p>That is how I want to keep learning: by making, noticing, and making again.</p>
+        </article>
+
+        <article id="melink" class="post-detail" hidden>
+            <a class="back-link" href="#working-notes">← Back to Working Notes</a>
+            <h2>Building MeLink at Saitama University</h2>
+            <p class="post-date">Sep 7, 2026</p>
+            <p>These days I am developing <a href="https://melink.info">MeLink</a>, an app for students at Saitama University. It is a chance to work on something close to my everyday life and the people around me.</p>
+            <p>Building for a familiar community makes small details matter. A short conversation, a confusing screen, or a useful shortcut can all change what the product should become.</p>
+            <p>I am still learning what MeLink can be, one release and one observation at a time.</p>
+        </article>
+
+        <article id="wide-curiosity" class="post-detail" hidden>
+            <a class="back-link" href="#working-notes">← Back to Working Notes</a>
+            <h2>A Wide Curiosity</h2>
+            <p class="post-date">Sep 7, 2026</p>
+            <p>I like moving between language, psychology, software, games, music, video, and 3D graphics. They look like different subjects, but each one changes how I notice people, systems, and possibilities.</p>
+            <p>Changing mediums is a useful way to change my thinking. A problem that feels abstract in code can become clear through an image, a sound, or a conversation.</p>
+            <p>I want to keep that curiosity wide enough for unexpected connections to appear.</p>
+        </article>
+    </section>
+
+    <script>
+        (() => {
+            const profile = document.getElementById("profile");
+            const notes = document.getElementById("working-notes");
+            const posts = Array.from(document.querySelectorAll(".post-detail"));
+
+            const renderPost = () => {
+                const slug = window.location.hash.slice(1);
+                const activePost = posts.find((post) => post.id === slug);
+                const isReading = Boolean(activePost);
+
+                profile.hidden = isReading;
+                notes.hidden = isReading;
+                posts.forEach((post) => {
+                    post.hidden = post !== activePost;
+                });
+
+                if (activePost) {
+                    window.scrollTo(0, 0);
+                }
+            };
+
+            window.addEventListener("hashchange", renderPost);
+            renderPost();
+        })();
+    </script>
 </body>
 
 </html>
