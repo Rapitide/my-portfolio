@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ギャラリー</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #fafafa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #262626;
+  }
+
+  header {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 16px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  header h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  header a {
+    color: #0095f6;
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+  header a:hover {
+    text-decoration: underline;
+  }
+
+  /* 均等グリッド：隙間1pxで細い枠線風に */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+    max-width: 960px;
+    margin: 0 auto 40px;
+    padding: 0 4px;
+  }
+  .gallery .item {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    cursor: pointer;
+    background: #efefef;
+  }
+  .gallery img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .3s ease;
+  }
+  .gallery .item:hover img {
+    transform: scale(1.04);
+  }
+
+  .item-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 6px 8px;
+    background: linear-gradient(to top, rgba(0,0,0,0.65), transparent);
+    color: #fff;
+    font-size: 0.8rem;
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.9;
+  }
+
+  /* スマホは2列（または3列のままにする場合も対応可） */
+  @media (max-width: 600px) {
+    .gallery {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      padding: 0 2px;
+    }
+    header {
+      padding: 16px 12px 12px;
+    }
+  }
+
+  /* 拡大表示（ライトボックス） */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    touch-action: manipulation;
+  }
+  .lightbox.open {
+    display: flex;
+  }
+  .lightbox-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 100%;
+    max-height: 100%;
+  }
+  .lightbox img {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 2px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .lightbox-caption {
+    color: #f0f0f0;
+    margin-top: 12px;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+  .lightbox .close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    color: #fff;
+    font-size: 38px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+    padding: 8px;
+    user-select: none;
+  }
+  .lightbox .close:hover {
+    opacity: 0.7;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Gallery</h1>
+  <a href="index.html">← トップに戻る</a>
+</header>
+
+<div class="gallery">
+  <!-- image フォルダ内の画像 -->
+  <div class="item" data-full="image/一女 output.png" data-title="一女">
+    <img src="image/一女 output.png" alt="一女" loading="lazy">
+    <div class="item-title">一女</div>
+  </div>
+  <div class="item" data-full="image/一女　夏 output.png" data-title="一女 夏">
+    <img src="image/一女　夏 output.png" alt="一女 夏" loading="lazy">
+    <div class="item-title">一女 夏</div>
+  </div>
+  <div class="item" data-full="image/大宮 output.png" data-title="大宮">
+    <img src="image/大宮 output.png" alt="大宮" loading="lazy">
+    <div class="item-title">大宮</div>
+  </div>
+  <div class="item" data-full="image/大宮　夏 output.png" data-title="大宮 夏">
+    <img src="image/大宮　夏 output.png" alt="大宮 夏" loading="lazy">
+    <div class="item-title">大宮 夏</div>
+  </div>
+  <div class="item" data-full="image/大宮東 output.png" data-title="大宮東">
+    <img src="image/大宮東 output.png" alt="大宮東" loading="lazy">
+    <div class="item-title">大宮東</div>
+  </div>
+  <div class="item" data-full="image/大宮東　夏 output.png" data-title="大宮東 夏">
+    <img src="image/大宮東　夏 output.png" alt="大宮東 夏" loading="lazy">
+    <div class="item-title">大宮東 夏</div>
+  </div>
+  <div class="item" data-full="image/大宮武蔵野 output.png" data-title="大宮武蔵野">
+    <img src="image/大宮武蔵野 output.png" alt="大宮武蔵野" loading="lazy">
+    <div class="item-title">大宮武蔵野</div>
+  </div>
+  <div class="item" data-full="image/常磐 output.png" data-title="常磐">
+    <img src="image/常磐 output.png" alt="常磐" loading="lazy">
+    <div class="item-title">常磐</div>
+  </div>
+  <div class="item" data-full="image/常磐 output (1).png" data-title="常磐 (別カット)">
+    <img src="image/常磐 output (1).png" alt="常磐 (別カット)" loading="lazy">
+    <div class="item-title">常磐 (別カット)</div>
+  </div>
+  <div class="item" data-full="image/浦和北 output.png" data-title="浦和北">
+    <img src="image/浦和北 output.png" alt="浦和北" loading="lazy">
+    <div class="item-title">浦和北</div>
+  </div>
+  <div class="item" data-full="image/浦和北　夏 output.png" data-title="浦和北 夏">
+    <img src="image/浦和北　夏 output.png" alt="浦和北 夏" loading="lazy">
+    <div class="item-title">浦和北 夏</div>
+  </div>
+  <div class="item" data-full="image/浦和商業 output.png" data-title="浦和商業">
+    <img src="image/浦和商業 output.png" alt="浦和商業" loading="lazy">
+    <div class="item-title">浦和商業</div>
+  </div>
+  <div class="item" data-full="image/浦和商業　夏 output.png" data-title="浦和商業 夏">
+    <img src="image/浦和商業　夏 output.png" alt="浦和商業 夏" loading="lazy">
+    <div class="item-title">浦和商業 夏</div>
+  </div>
+  <div class="item" data-full="image/浦和学院 output.png" data-title="浦和学院">
+    <img src="image/浦和学院 output.png" alt="浦和学院" loading="lazy">
+    <div class="item-title">浦和学院</div>
+  </div>
+  <div class="item" data-full="image/浦和学院　夏 output.png" data-title="浦和学院 夏">
+    <img src="image/浦和学院　夏 output.png" alt="浦和学院 夏" loading="lazy">
+    <div class="item-title">浦和学院 夏</div>
+  </div>
+  <div class="item" data-full="image/浦和実業 output.png" data-title="浦和実業">
+    <img src="image/浦和実業 output.png" alt="浦和実業" loading="lazy">
+    <div class="item-title">浦和実業</div>
+  </div>
+  <div class="item" data-full="image/浦和実業　夏 output.png" data-title="浦和実業 夏">
+    <img src="image/浦和実業　夏 output.png" alt="浦和実業 夏" loading="lazy">
+    <div class="item-title">浦和実業 夏</div>
+  </div>
+  <div class="item" data-full="image/浦和工業 output.png" data-title="浦和工業">
+    <img src="image/浦和工業 output.png" alt="浦和工業" loading="lazy">
+    <div class="item-title">浦和工業</div>
+  </div>
+  <div class="item" data-full="image/浦和明の星 output.png" data-title="浦和明の星">
+    <img src="image/浦和明の星 output.png" alt="浦和明の星" loading="lazy">
+    <div class="item-title">浦和明の星</div>
+  </div>
+  <div class="item" data-full="image/浦和明の星 　夏 output.png" data-title="浦和明の星 夏">
+    <img src="image/浦和明の星 　夏 output.png" alt="浦和明の星 夏" loading="lazy">
+    <div class="item-title">浦和明の星 夏</div>
+  </div>
+  <div class="item" data-full="image/浦和東 output.png" data-title="浦和東">
+    <img src="image/浦和東 output.png" alt="浦和東" loading="lazy">
+    <div class="item-title">浦和東</div>
+  </div>
+  <div class="item" data-full="image/浦和東　夏 output.png" data-title="浦和東 夏">
+    <img src="image/浦和東　夏 output.png" alt="浦和東 夏" loading="lazy">
+    <div class="item-title">浦和東 夏</div>
+  </div>
+  <div class="item" data-full="image/浦和麗明 output.png" data-title="浦和麗明">
+    <img src="image/浦和麗明 output.png" alt="浦和麗明" loading="lazy">
+    <div class="item-title">浦和麗明</div>
+  </div>
+  <div class="item" data-full="image/浦和麗明　夏 output.png" data-title="浦和麗明 夏">
+    <img src="image/浦和麗明　夏 output.png" alt="浦和麗明 夏" loading="lazy">
+    <div class="item-title">浦和麗明 夏</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="close" id="close" aria-label="閉じる">&times;</button>
+  <div class="lightbox-content">
+    <img id="lightbox-img" alt="">
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+</div>
+
+<script>
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxCaption = document.getElementById('lightbox-caption');
+
+  // タップ / クリックで高画質画像を拡大
+  document.querySelectorAll('.gallery .item').forEach(item => {
+    item.addEventListener('click', () => {
+      lightboxImg.src = item.dataset.full;
+      lightboxCaption.textContent = item.dataset.title || '';
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden'; // 背景スクロール固定
+    });
+  });
+
+  // 閉じる（×ボタン or 背景タップ）
+  const close = () => {
+    lightbox.classList.remove('open');
+    lightboxImg.src = '';
+    lightboxCaption.textContent = '';
+    document.body.style.overflow = '';
+  };
+
+  document.getElementById('close').addEventListener('click', close);
+  lightbox.addEventListener('click', e => {
+    if (e.target === lightbox) close();
+  });
+
+  // ESCキーでも閉じられるように
+  window.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && lightbox.classList.contains('open')) {
+      close();
+    }
+  });
+</script>
+
+</body>
+</html>
